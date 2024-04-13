@@ -12,7 +12,9 @@ PRINT: 'puts';
 INT: 'int';
 INT_VAL: [1-9][0-9]*;
 FLOAT: 'float';
-FLOAT_VAL: [1-9][0-9]*.[0-9]*;
+FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
+STRING: 'string';
+STRING_VAL: '"'~[""]*'"';
 LPAR:
 RPAR:
 NOT:
