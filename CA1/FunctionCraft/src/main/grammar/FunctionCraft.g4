@@ -15,6 +15,8 @@ FLOAT: 'float';
 FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
 STRING: 'string';
 STRING_VAL: '"'~[""]*'"';
+BOOL: 'bool';
+BOOL_VAL: [0-1];
 LPAR:
 RPAR:
 NOT:
