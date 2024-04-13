@@ -17,6 +17,8 @@ STRING: 'string';
 STRING_VAL: '"'~[""]*'"';
 BOOL: 'bool';
 BOOL_VAL: [0-1];
+FUN_POINTER: 'fptr';
+FUN_POINTER_VAL: 'method(:'[a-z][a-zA-Z0-9_]*')'
 LPAR:
 RPAR:
 NOT:
