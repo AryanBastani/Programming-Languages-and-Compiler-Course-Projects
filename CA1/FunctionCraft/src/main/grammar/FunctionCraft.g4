@@ -42,11 +42,10 @@ FUN_POINTER: 'fptr';
 FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
 LPAR: '(';
 RPAR: ')';
-NOT:
-PLUS:
-MINUS:
-MULT:
-DIV:
+PLUS: '+';
+MINUS: '-';
+MULT: '*';
+DIV: '/';
 MOD:
 GEQ:
 LEQ:
