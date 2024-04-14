@@ -6,7 +6,7 @@ grammar FunctionCraft;
 
 
 
-
+// Keywords:
 MAIN: 'main';
 PRINT: 'puts';
 FUN_STARTER: 'def';
@@ -30,37 +30,63 @@ LOOP: 'loop';
 DO: 'do';
 FOR: 'for';
 IN: 'in';
+
+// Data Types:
 INT: 'int';
-INT_VAL: [1-9][0-9]*;
 FLOAT: 'float';
-FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
 STRING: 'string';
-STRING_VAL: '"'~[""]*'"';
 BOOL: 'bool';
-BOOL_VAL: TRUE|FALSE;
 LIST: 'list';
 FUN_POINTER: 'fptr';
+
+// Data Values:
+INT_VAL: [1-9][0-9]*;
+FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
+STRING_VAL: '"'~[""]*'"';
+BOOL_VAL: TRUE|FALSE;
 FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
+
+// Parenthesis:
 LPAR: '(';
 RPAR: ')';
+
+// Access and Methods:
+DOT: '.';
+
+// Arithmetic Operators
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
+INC: '++';
+DEC: '--';
+
+// Comparator Operators:
 GEQ: '>=';
 LEQ: '<=';
 GTR: '>';
-LES: ',';
+LES: '<';
+EQL: '==';
+NEQ: '!=';
+
+// Logical Operator:
 AND: '&&';
 OR: '||';
 NOT: '!';
+
+// Assigning Operators:
 ASSIGN: '=';
+
+//Braces:
 LBRACE: '{';
 RBRACE: '}';
+
+// Symbols:
 COMMA: ',';
-DOT: '.';
 COLON: ':';
 SEMICOLON: ';';
+
+// Others:
 INDENTIFIER: [a-z][a-zA-Z0-9_]*;
 ONE_COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '=begin' .*? '=end' -> skip;
