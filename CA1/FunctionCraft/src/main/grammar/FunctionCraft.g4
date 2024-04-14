@@ -56,10 +56,10 @@ NOT: '!';
 ASSIGN: '=';
 LBRACE: '{';
 RBRACE: '}';
-COMMA:
-DOT:
-COLON:
-SEMICOLON:
+COMMA: ',';
+DOT: '.';
+COLON: ':';
+SEMICOLON: ';';
 INDENTIFIER: [a-z][a-zA-Z0-9_]*;
 ONE_COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '=begin' ~['=end']* -> skip;
