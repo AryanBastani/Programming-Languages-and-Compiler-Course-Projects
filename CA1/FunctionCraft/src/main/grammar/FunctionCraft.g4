@@ -64,5 +64,6 @@ DOT:
 COLON:
 SEMICOLON:
 INDENTIFIER:
-COMMENT:
+ONE_COMMENT: '#' ~[\r\n]* -> skip;
+MULTI_COMMENT: '=begin' ~[=end]* -> skip;
 WS:
