@@ -50,10 +50,9 @@ GEQ: '>=';
 LEQ: '<=';
 GTR: '>';
 LES: ',';
-EQL:
-NEQ:
-AND:
-OR:
+AND: '&&';
+OR: '||';
+NOT: '!';
 ASSIGN:
 LBRACE:
 RBRACE:
