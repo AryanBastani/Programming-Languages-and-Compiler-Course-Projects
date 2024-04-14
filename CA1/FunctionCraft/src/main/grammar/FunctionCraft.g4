@@ -46,11 +46,10 @@ PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
-MOD:
-GEQ:
-LEQ:
-GTR:
-LES:
+GEQ: '>=';
+LEQ: '<=';
+GTR: '>';
+LES: ',';
 EQL:
 NEQ:
 AND:
