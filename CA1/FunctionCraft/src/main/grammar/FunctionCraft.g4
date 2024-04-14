@@ -2,10 +2,6 @@ grammar FunctionCraft;
 
 
 
-
-
-
-
 // Keywords:
 MAIN: 'main';
 PRINT: 'puts';
@@ -53,11 +49,23 @@ RPAR: ')';
 // Access and Methods:
 DOT: '.';
 
+// Append Operators:
+APPEND: '<<';
+
+// Assigning Operators:
+ASSIGN: '=';
+ADD_ASSIGN: '+=';
+MINUS_ASSIGN: '-=';
+MULT_ASSIGN: '*=';
+DIV_ASSGIN: '/=';
+MOD_ASSIGN: '%=';
+
 // Arithmetic Operators
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
+MOD: '%';
 INC: '++';
 DEC: '--';
 
@@ -74,8 +82,9 @@ AND: '&&';
 OR: '||';
 NOT: '!';
 
-// Assigning Operators:
-ASSIGN: '=';
+//Brackets:
+LBRACKET: '[';
+RBRACKET: ']';
 
 //Braces:
 LBRACE: '{';
@@ -86,8 +95,10 @@ COMMA: ',';
 COLON: ':';
 SEMICOLON: ';';
 
-// Others:
-INDENTIFIER: [a-z][a-zA-Z0-9_]*;
+//Comments:
 ONE_COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '=begin' .*? '=end' -> skip;
+
+// Others:
+INDENTIFIER: [a-z][a-zA-Z0-9_]*;
 WS: [ \t\r\n]+ -> skip;
