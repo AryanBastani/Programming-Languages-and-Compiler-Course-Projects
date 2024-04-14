@@ -28,16 +28,16 @@ FOR: 'for';
 IN: 'in';
 
 // Data Types:
-INT: 'int';
 FLOAT: 'float';
+INT: 'int';
 STRING: 'string';
 BOOL: 'bool';
 LIST: 'list';
 FUN_POINTER: 'fptr';
 
 // Data Values:
-INT_VAL: [1-9][0-9]*;
 FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
+INT_VAL: [1-9][0-9]*;
 STRING_VAL: '"'~[""]*'"';
 BOOL_VAL: TRUE|FALSE;
 FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
@@ -52,6 +52,14 @@ DOT: '.';
 // Append Operators:
 APPEND: '<<';
 
+// Comparator Operators:
+GEQ: '>=';
+LEQ: '<=';
+GTR: '>';
+LES: '<';
+EQL: '==';
+NEQ: '!=';
+
 // Assigning Operators:
 ASSIGN: '=';
 ADD_ASSIGN: '+=';
@@ -61,21 +69,13 @@ DIV_ASSGIN: '/=';
 MOD_ASSIGN: '%=';
 
 // Arithmetic Operators
+INC: '++';
+DEC: '--';
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
 MOD: '%';
-INC: '++';
-DEC: '--';
-
-// Comparator Operators:
-GEQ: '>=';
-LEQ: '<=';
-GTR: '>';
-LES: '<';
-EQL: '==';
-NEQ: '!=';
 
 // Logical Operator:
 AND: '&&';
