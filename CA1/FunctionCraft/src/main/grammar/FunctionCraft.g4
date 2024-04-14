@@ -40,8 +40,8 @@ BOOL: 'bool';
 BOOL_VAL: TRUE|FALSE;
 FUN_POINTER: 'fptr';
 FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
-LPAR:
-RPAR:
+LPAR: '(';
+RPAR: ')';
 NOT:
 PLUS:
 MINUS:
