@@ -53,9 +53,9 @@ LES: ',';
 AND: '&&';
 OR: '||';
 NOT: '!';
-ASSIGN:
-LBRACE:
-RBRACE:
+ASSIGN: '=';
+LBRACE: '{';
+RBRACE: '}';
 COMMA:
 DOT:
 COLON:
