@@ -28,16 +28,16 @@ FOR: 'for';
 IN: 'in';
 
 // Data Types:
-FLOAT: 'float';
 INT: 'int';
+FLOAT: 'float';
 STRING: 'string';
 BOOL: 'bool';
 LIST: 'list';
 FUN_POINTER: 'fptr';
 
 // Data Values:
-FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
 INT_VAL: [1-9][0-9]*;
+FLOAT_VAL: INT_VAL'.'[0-9]*;
 STRING_VAL: '"'~[""]*'"';
 BOOL_VAL: TRUE|FALSE;
 FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
