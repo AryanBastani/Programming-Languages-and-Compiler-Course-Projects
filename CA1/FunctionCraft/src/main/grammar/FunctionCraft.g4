@@ -35,7 +35,7 @@ INT_VAL: [1-9][0-9]*;
 FLOAT: 'float';
 FLOAT_VAL: [1-9][0-9]*'.'[0-9]*;
 STRING: 'string';
-STRING_VAL: '"'~[""]*'"';
+STRING_VAL: '"'~['']*'"';
 BOOL: 'bool';
 BOOL_VAL: TRUE|FALSE;
 FUN_POINTER: 'fptr';
@@ -63,7 +63,7 @@ COMMA:
 DOT:
 COLON:
 SEMICOLON:
-INDENTIFIER:
+INDENTIFIER: [a-z][a-zA-Z0-9_]*;
 ONE_COMMENT: '#' ~[\r\n]* -> skip;
-MULTI_COMMENT: '=begin' ~[=end]* -> skip;
+MULTI_COMMENT: '=begin' ~['=end']* -> skip;
 WS:
