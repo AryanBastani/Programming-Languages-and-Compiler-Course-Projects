@@ -1,11 +1,36 @@
 grammar FunctionCraft;
 
 comment
-    : SINGLELINECOMMENT
+    :
+    SINGLELINECOMMENT
     | MULTILINECOMMENT;
 
+function
+    :
+    FUN_STARTER
+    INDENTIFIER
+    '('
+    arguments
+    ')'
+    bodyFunction
+    functionReturn?
+    ENDER
+    ;
+
+functionReturn
+    :
+    RETURN
+    '('
+    expr
+    ')'
+    SEMICOLON
+    ;
 
 
+bodyFunction
+    :
+    (statement | comment)*
+    ;
 
 // Keywords:
 MAIN: 'main';
