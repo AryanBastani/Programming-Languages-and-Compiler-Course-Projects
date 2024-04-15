@@ -6,6 +6,13 @@ comment
     | MULTILINECOMMENT
     ;
 
+program
+    :
+    (function | comment)*
+    main
+    comment*
+    ;
+
 main
     :
     FUN_STARTER
