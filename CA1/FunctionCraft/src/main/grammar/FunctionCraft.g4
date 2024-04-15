@@ -28,9 +28,7 @@ function
     :
     FUN_STARTER
     INDENTIFIER
-    '('
     arguments
-    ')'
     bodyFunction
     ENDER
     ;
@@ -48,6 +46,14 @@ bodyFunction
     :
     (statement | comment)*
     functionReturn?
+    ;
+
+lambdaFunction
+    :
+    arguments
+    LBRACE
+    bodyFunction
+    RBRACE
     ;
 
 // Keywords:
@@ -142,6 +148,7 @@ RBRACE: '}';
 COMMA: ',';
 COLON: ':';
 SEMICOLON: ';';
+LAMBDA_STARTER: '->';
 
 //Comments:
 ONE_COMMENT: '#' ~[\r\n]* -> skip;
