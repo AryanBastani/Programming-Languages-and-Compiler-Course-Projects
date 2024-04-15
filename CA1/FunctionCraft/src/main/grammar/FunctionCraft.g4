@@ -3,7 +3,19 @@ grammar FunctionCraft;
 comment
     :
     SINGLELINECOMMENT
-    | MULTILINECOMMENT;
+    | MULTILINECOMMENT
+    ;
+
+main
+    :
+    FUN_STARTER
+    MAIN
+    '('
+    ')'
+    bodyFunction
+    ENDER
+    ;
+
 
 function
     :
@@ -13,7 +25,6 @@ function
     arguments
     ')'
     bodyFunction
-    functionReturn?
     ENDER
     ;
 
@@ -26,10 +37,10 @@ functionReturn
     SEMICOLON
     ;
 
-
 bodyFunction
     :
     (statement | comment)*
+    functionReturn?
     ;
 
 // Keywords:
