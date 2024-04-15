@@ -1,5 +1,10 @@
 grammar FunctionCraft;
 
+comment
+    : SINGLELINECOMMENT
+    | MULTILINECOMMENT;
+
+
 
 
 // Keywords:
