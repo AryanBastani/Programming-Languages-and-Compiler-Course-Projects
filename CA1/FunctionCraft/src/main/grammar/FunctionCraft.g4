@@ -17,9 +17,9 @@ main
     :
     FUN_STARTER
     MAIN
-    '('
-    ')'
-    bodyFunction
+    LPAR
+    RPAR
+    statement
     ENDER
     ;
 
@@ -29,32 +29,441 @@ function
     FUN_STARTER
     INDENTIFIER
     arguments
-    bodyFunction
+    statement
     ENDER
+    ;
+
+returnInside
+    :
+    LPAR
+    expr
+    RPAR
+    |
+    expr
     ;
 
 functionReturn
     :
     RETURN
-    '('
-    expr
-    ')'
+    returnInside
     SEMICOLON
-    ;
-
-bodyFunction
-    :
-    (statement | comment)*
-    functionReturn?
     ;
 
 lambdaFunction
     :
     arguments
     LBRACE
-    bodyFunction
+    statement
     RBRACE
     ;
+
+functionCall
+    :
+    INDENTIFIER
+    argumentsCall
+    ;
+labdaCall
+    :
+    lambdaFunction
+    argumentsCall
+    ;
+
+assignment
+    :
+    IDENTIFIER
+    (
+    ASSIGN
+    |
+    ADD_ASSIGN
+    |
+    MINUS_ASSIGN
+    |
+    MULT_ASSIGN
+    |
+    DIV_ASSGIN
+    |
+    MOD_ASSIGN
+    )
+    expr
+    SEMICOLON
+    ;
+
+arguments
+    :
+    LPAR
+    argInside
+    RPAR
+    ;
+
+argInside
+    :
+    IDENTIFIER
+    COMMA
+    argInside
+    |
+    parameter
+    COMMA
+    argInside
+    |
+    IDENTIFIER
+    |
+    parameter
+    ;
+
+argumentsCall
+    :
+    expr
+    COMMA
+    argumentsCall
+    |
+    expr
+    ;
+
+parameter
+    :
+    LBRACKET
+    paramInside
+    RBRACKET
+    ;
+
+paramInside
+    :
+    assignment
+    COMMA
+    paramInside
+    |
+    assignment
+    ;
+
+loopLoop
+    :
+    LOOP
+    DO
+    bodyLoop
+    ENDER
+    ;
+
+bodyLoop
+    :
+    (statement | LOOP_CONTINUE | BREAK)*
+    ;
+
+statement
+    :
+    (
+          functionReturn
+        | functionCall                 { System.out.println("FunctionCall"); }
+        | print_function_call           { System.out.println("Built-in:print"); }
+        | primitive_function_call       { System.out.println("FunctionCall"); }
+        | expr
+        | init
+        | declaration
+        | assignment
+        | schedule?
+        | throw_exception
+    ) SEMICOLON
+    | comment
+    | if_condition
+    | for_loop
+    | loopLoop
+    | try_catch
+    ;
+
+forList
+    :
+    For
+    INDENTIFIER
+    IN
+    INDENTIFIER
+    statement
+    ENDER
+    ;
+
+startEnd
+    :
+    (INDENTIFIER|INT_VAL)
+    ;
+
+forRange
+    :
+    FOR
+    INDENTIFIER
+    IN
+    LPAR
+    startEnd
+    DOT
+    DOT
+    startEnd
+    RPAR
+    statement
+    ENDER
+    ;
+
+ifInside
+    :
+    LPAR
+    ifStatement
+    RPAR
+    ;
+
+afterIf
+    :
+    IF
+    ifInside
+    SEMICOLON
+    ;
+
+nextIF
+    :
+    LOOP_CONTINUE
+    afterIf
+    ;
+
+ breakIF
+     :
+     BREAK
+     afterIf
+     ;
+
+if
+    :
+    IF
+    ifInside
+    (statement|elif)*
+    else
+    ENDER
+    ;
+
+elif
+    :
+    ELSEIF
+    ifInside
+    statement
+    ;
+
+else
+    :
+    ELSE
+    ifInside
+    statement
+    ;
+
+listInside
+    :
+    val
+    COMMA
+    listInside
+    |
+    val
+    ;
+
+listVal
+    :
+    LBRACKET
+    listInside
+    RBRACKET
+    ;
+
+val
+    :
+    INT_VAL
+    |
+    FLOAT_VAL
+    |
+    BOOL_VAL
+    |
+    STRING_VAL
+    |
+    FUN_POINTER_VAL
+    ;
+
+appendInside
+    :
+    expr
+    ADD_ASSIGN
+    ;
+
+
+append
+    :
+    INDENTIFIER
+    appendInside
+    SEMICOLON
+    ;
+
+patternInside
+    :
+    (
+    TAB
+    OR
+    patternexpr
+    )*
+    ;
+
+pattern
+    :
+    PATTERN_SIGN
+    INDENTIFIER
+    arguments
+    patternInside
+    SEMICOLON
+    ;
+
+putPush
+    :
+    (
+    PUT
+    |
+    PUSH
+    )
+    LPAR
+    expr
+    RPAR
+    ;
+
+chopChomp
+    :
+    (
+    CHOP
+    |
+    CHOMP
+    )
+    LPAR
+    strExpr
+    RPAR
+    ;
+
+len
+    :
+    LEN
+    LPAR
+    (
+    listExpr
+    |
+    strExpr
+    )
+    RPAR
+    ;
+
+
+
+builtInsideFuns
+    :
+    putPush
+    |
+    chopChomp
+    |
+    len
+    ;
+
+singleMath
+    :
+    INDENTIFIER
+    INC
+    |
+    INDENTIFIER
+    DEC
+    |
+    INDENTIFIER
+    |
+    INT_VAL
+    |
+    FLOAT_VAL
+    |
+    LPAR
+    mathExpr
+    RPAR
+    ;
+
+addMinusExpr
+    :
+    singleMath
+    |
+    singleMath
+    MULT
+    addMinusExpr
+    |
+    singleMath
+    DIV
+    addMinusExpr
+    |
+    singleMath
+    MOD
+    addMinusExpr
+    ;
+
+mathExpr
+    :
+    addMinusExpr
+    |
+    addMinusExpr
+    PLUS
+    mathExpr
+    |
+    addMinusExpr
+    MINUS
+    mathExpr
+    ;
+
+singleLogic
+    :
+    INT_VAL
+    |
+    BOOL_VAL
+    |
+    INDENTIFIER
+    |
+    mathExpr
+    ;
+
+parLogic
+    :
+    LPAR
+    logicExpr
+    RPAR
+    ;
+
+logicExpr
+    :
+    parLogic
+    LOG_AND
+    parLogic
+    |
+    parLogic
+    LOG_OR
+    parLogic
+    |
+    singleLogic
+    ;
+
+perComp
+    :
+    
+
+compExpr
+    :
+    perComp
+    GEQ
+    perComp
+    |
+    perComp
+    LEQ
+    perComp
+    |
+    perComp
+    GTR
+    perComp
+    |
+    perComp
+    LES
+    perComp
+    |
+    singleComp
+    ;
+
+
+
+
 
 // Keywords:
 MAIN: 'main';
@@ -72,7 +481,7 @@ CHOMP: 'chomp';
 PUSH: 'push';
 METHOD: 'method';
 LEN: 'len';
-PATTERN: 'pattern';
+PATTERN_SIGN: 'pattern';
 MATCH: 'match';
 LOOP_CONTINUE: 'next';
 BREAK: 'break';
@@ -104,7 +513,7 @@ RPAR: ')';
 DOT: '.';
 
 // Append Operators:
-APPEND: '<<';
+APPENDSIGN: '<<';
 
 // Comparator Operators:
 GEQ: '>=';
@@ -131,9 +540,13 @@ MULT: '*';
 DIV: '/';
 MOD: '%';
 
+// Arithmatic Operators:
+AND: '&';
+OR: '|';
+
 // Logical Operator:
-AND: '&&';
-OR: '||';
+LOG_AND: '&&';
+LOG_OR: '||';
 NOT: '!';
 
 //Brackets:
@@ -156,4 +569,5 @@ MULTI_COMMENT: '=begin' .*? '=end' -> skip;
 
 // Others:
 INDENTIFIER: [a-z][a-zA-Z0-9_]*;
-WS: [ \t\r\n]+ -> skip;
+TAB: '\r\n\t' | '\r\n    ';
+WS: [ TAB\r\n]+ -> skip;
