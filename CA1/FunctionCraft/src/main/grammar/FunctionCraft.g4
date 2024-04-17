@@ -194,6 +194,8 @@ appendArgument
     |
     val
     appendInside
+    |
+    listVal
     ;
 
 if
