@@ -238,10 +238,7 @@ else
 listInside
     :
     val
-    COMMA
-    listInside
-    |
-    val
+    (COMMA listInside)?
     ;
 
 listVal
@@ -314,21 +311,22 @@ chopChomp
 appendStr
     :
     APPEND_SIGN
+    (
     appendStr
     |
-    APPEND_SIGN
     INDENTIFIER
     |
-    APPEND_SIGN
     STRING_VAL
+    )
     ;
 
 strExpr
     :
+    (
     INDENTIFIER
-    appendStr
     |
     STRING_VAL
+    )
     appendStr
     ;
 
@@ -387,31 +385,15 @@ preSingleMath
 addMinusExpr
     :
     preSingleMath
-    |
-    preSingleMath
-    MULT
-    addMinusExpr
-    |
-    preSingleMath
-    DIV
-    addMinusExpr
-    |
-    preSingleMath
-    MOD
-    addMinusExpr
+    ((MULT | DIV | MOD)
+    addMinusExpr)?
     ;
 
 mathExpr
     :
     addMinusExpr
-    |
-    addMinusExpr
-    PLUS
-    mathExpr
-    |
-    addMinusExpr
-    MINUS
-    mathExpr
+    ((PLUS | MINUS)
+    mathExpr)?
     ;
 
 
@@ -455,11 +437,7 @@ perEqComp
 eqCompExpr
     :
     perEqComp
-    EQL
-    perEqComp
-    |
-    perEqComp
-    NEQ
+    (EQL | NEQ)
     perEqComp
     |
     compExpr
@@ -492,11 +470,7 @@ parLogic
 logicExpr
     :
     parLogic
-    LOG_AND
-    parLogic
-    |
-    parLogic
-    LOG_OR
+    (LOG_AND | LOG_OR)
     parLogic
     |
     singleLogic
@@ -520,10 +494,7 @@ appendExpr
 appendInside
     :
     APPEND_SIGN
-    logicExpr
-    |
-    APPEND_SIGN
-    appendInside
+    (logicExpr | appendInside)
     ;
 
 
