@@ -132,7 +132,7 @@ loopLoop
 
 bodyLoop
     :
-    (bodyFunction | LOOP_CONTINUE | BREAK)*
+    (statement | LOOP_CONTINUE | BREAK)*
     ;
 
 statement
@@ -216,7 +216,7 @@ if
     :
     IF
     ifInside
-    (bodyFunction|elif)*
+    (statement|elif)*
     else
     ENDER
     ;
