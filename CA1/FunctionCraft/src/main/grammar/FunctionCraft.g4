@@ -19,8 +19,13 @@ main
     MAIN
     LPAR
     RPAR
-    statement
+    bodyFunction
     ENDER
+    ;
+
+bodyFunction
+    :
+    statement*
     ;
 
 
@@ -29,17 +34,17 @@ function
     FUN_STARTER
     INDENTIFIER
     arguments
-    statement
+    bodyFunction
     ENDER
     ;
 
 returnInside
     :
     LPAR
-    expr
+    appendArgument
     RPAR
     |
-    expr
+    appendArgument
     ;
 
 functionReturn
@@ -53,7 +58,7 @@ lambdaFunction
     :
     arguments
     LBRACE
-    statement
+    bodyFunction
     RBRACE
     ;
 
@@ -68,25 +73,7 @@ labdaCall
     argumentsCall
     ;
 
-assignment
-    :
-    IDENTIFIER
-    (
-    ASSIGN
-    |
-    ADD_ASSIGN
-    |
-    MINUS_ASSIGN
-    |
-    MULT_ASSIGN
-    |
-    DIV_ASSGIN
-    |
-    MOD_ASSIGN
-    )
-    expr
-    SEMICOLON
-    ;
+
 
 arguments
     :
@@ -112,11 +99,11 @@ argInside
 
 argumentsCall
     :
-    expr
+    appendArgument
     COMMA
     argumentsCall
     |
-    expr
+    appendArgument
     ;
 
 parameter
@@ -128,11 +115,11 @@ parameter
 
 paramInside
     :
-    assignment
+    assignmentExpr
     COMMA
     paramInside
     |
-    assignment
+    assignmentExpr
     ;
 
 loopLoop
@@ -145,28 +132,28 @@ loopLoop
 
 bodyLoop
     :
-    (statement | LOOP_CONTINUE | BREAK)*
+    (bodyFunction | LOOP_CONTINUE | BREAK)*
     ;
 
 statement
     :
     (
           functionReturn
-        | functionCall                 { System.out.println("FunctionCall"); }
-        | print_function_call           { System.out.println("Built-in:print"); }
-        | primitive_function_call       { System.out.println("FunctionCall"); }
-        | expr
-        | init
-        | declaration
-        | assignment
-        | schedule?
-        | throw_exception
+        | functionCall
+        | builtInsideFuns
+        | assignmentExpr
     ) SEMICOLON
     | comment
-    | if_condition
-    | for_loop
+    | if
+    | forLoop
     | loopLoop
-    | try_catch
+    ;
+
+forLoop
+    :
+    forRange
+    |
+    forList
     ;
 
 forList
@@ -175,7 +162,7 @@ forList
     INDENTIFIER
     IN
     INDENTIFIER
-    statement
+    bodyFunction
     ENDER
     ;
 
@@ -195,14 +182,14 @@ forRange
     DOT
     startEnd
     RPAR
-    statement
+    bodyFunction
     ENDER
     ;
 
 ifInside
     :
     LPAR
-    ifStatement
+    logicExpr
     RPAR
     ;
 
@@ -229,7 +216,7 @@ if
     :
     IF
     ifInside
-    (statement|elif)*
+    (bodyFunction|elif)*
     else
     ENDER
     ;
@@ -238,14 +225,14 @@ elif
     :
     ELSEIF
     ifInside
-    statement
+    bodyFunction
     ;
 
 else
     :
     ELSE
     ifInside
-    statement
+    bodyFunction
     ;
 
 listInside
@@ -277,26 +264,17 @@ val
     FUN_POINTER_VAL
     ;
 
-appendInside
-    :
-    expr
-    ADD_ASSIGN
-    ;
 
 
-append
-    :
-    INDENTIFIER
-    appendInside
-    SEMICOLON
-    ;
+
+
 
 patternInside
     :
     (
     TAB
     OR
-    patternexpr
+    assignmentExpr
     )*
     ;
 
@@ -317,7 +295,7 @@ putPush
     PUSH
     )
     LPAR
-    expr
+    appendExpr
     RPAR
     ;
 
@@ -333,12 +311,33 @@ chopChomp
     RPAR
     ;
 
+appendStr
+    :
+    APPEND_SIGN
+    appendStr
+    |
+    APPEND_SIGN
+    INDENTIFIER
+    |
+    APPEND_SIGN
+    STRING_VAL
+    ;
+
+strExpr
+    :
+    INDENTIFIER
+    appendStr
+    |
+    STRING_VAL
+    appendStr
+    ;
+
 len
     :
     LEN
     LPAR
     (
-    listExpr
+    appendExpr
     |
     strExpr
     )
@@ -356,38 +355,48 @@ builtInsideFuns
     len
     ;
 
-singleMath
+
+
+
+
+postSingleMath
     :
     INDENTIFIER
-    INC
+    (INC | DEC)?
     |
-    INDENTIFIER
-    DEC
-    |
-    INDENTIFIER
-    |
-    INT_VAL
-    |
-    FLOAT_VAL
+    (INT_VAL | FLOAT_VAL)
     |
     LPAR
-    mathExpr
+    logicExpr
     RPAR
+    (INC | DEC)?
+    |
+    INDENTIFIER
+    LBRACKET
+    logicExpr
+    RBRACKET
+    (INC | DEC)?
+    ;
+
+preSingleMath
+    :
+    (MINUS | NOT)?
+    postSingleMath
     ;
 
 addMinusExpr
     :
-    singleMath
+    preSingleMath
     |
-    singleMath
+    preSingleMath
     MULT
     addMinusExpr
     |
-    singleMath
+    preSingleMath
     DIV
     addMinusExpr
     |
-    singleMath
+    preSingleMath
     MOD
     addMinusExpr
     ;
@@ -405,6 +414,67 @@ mathExpr
     mathExpr
     ;
 
+
+
+
+perComp
+    :
+    LPAR
+    compExpr
+    RPAR
+    ;
+
+compExpr
+    :
+    perComp
+    GEQ
+    perComp
+    |
+    perComp
+    LEQ
+    perComp
+    |
+    perComp
+    GTR
+    perComp
+    |
+    perComp
+    LES
+    perComp
+    |
+    mathExpr
+    ;
+
+
+
+
+
+perEqComp
+    :
+    LPAR
+    eqCompExpr
+    RPAR
+    ;
+
+eqCompExpr
+    :
+    perEqComp
+    EQL
+    perEqComp
+    |
+    perEqComp
+    NEQ
+    perEqComp
+    |
+    compExpr
+    ;
+
+
+
+
+
+
+
 singleLogic
     :
     INT_VAL
@@ -413,7 +483,7 @@ singleLogic
     |
     INDENTIFIER
     |
-    mathExpr
+    eqCompExpr
     ;
 
 parLogic
@@ -436,33 +506,68 @@ logicExpr
     singleLogic
     ;
 
-perComp
-    :
-    
 
-compExpr
+appendArgument
     :
-    perComp
-    GEQ
-    perComp
+    appendExpr
     |
-    perComp
-    LEQ
-    perComp
+    val
+    appendInside
+    ;
+
+appendExpr
+    :
+    INDENTIFIER
+    appendInside
+    ;
+
+appendInside
+    :
+    APPEND_SIGN
+    logicExpr
     |
-    perComp
-    GTR
-    perComp
-    |
-    perComp
-    LES
-    perComp
-    |
-    singleComp
+    APPEND_SIGN
+    appendInside
     ;
 
 
 
+
+assignmentExpr
+    :
+    type?
+    IDENTIFIER
+    (
+    ASSIGN
+    |
+    ADD_ASSIGN
+    |
+    MINUS_ASSIGN
+    |
+    MULT_ASSIGN
+    |
+    DIV_ASSGIN
+    |
+    MOD_ASSIGN
+    )
+    appendExpr
+    SEMICOLON
+    ;
+
+type
+    :
+    INT
+    |
+    FLOAT
+    |
+    STRING
+    |
+    BOOL
+    |
+    LIST
+    |
+    FUN_POINTER
+    ;
 
 
 // Keywords:
@@ -513,7 +618,7 @@ RPAR: ')';
 DOT: '.';
 
 // Append Operators:
-APPENDSIGN: '<<';
+APPEND_SIGN: '<<';
 
 // Comparator Operators:
 GEQ: '>=';
