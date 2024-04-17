@@ -548,7 +548,7 @@ FUN_POINTER: 'fptr';
 // Data Values:
 INT_VAL: [1-9][0-9]*;
 FLOAT_VAL: INT_VAL'.'[0-9]*;
-STRING_VAL: '"'~[""]*'"';
+STRING_VAL: '"'~["]*'"';
 BOOL_VAL: TRUE|FALSE;
 FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
 

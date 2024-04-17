@@ -52,18 +52,6 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBodyFunction(FunctionCraftParser.BodyFunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBodyFunction(FunctionCraftParser.BodyFunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFunction(FunctionCraftParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -76,61 +64,13 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturnInside(FunctionCraftParser.ReturnInsideContext ctx) { }
+	@Override public void enterBodyFunction(FunctionCraftParser.BodyFunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReturnInside(FunctionCraftParser.ReturnInsideContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunctionCall(FunctionCraftParser.FunctionCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunctionCall(FunctionCraftParser.FunctionCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLabdaCall(FunctionCraftParser.LabdaCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLabdaCall(FunctionCraftParser.LabdaCallContext ctx) { }
+	@Override public void exitBodyFunction(FunctionCraftParser.BodyFunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -160,18 +100,6 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterParameter(FunctionCraftParser.ParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -196,6 +124,78 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatement(FunctionCraftParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatement(FunctionCraftParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReturnInside(FunctionCraftParser.ReturnInsideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReturnInside(FunctionCraftParser.ReturnInsideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionCall(FunctionCraftParser.FunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionCall(FunctionCraftParser.FunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLabdaCall(FunctionCraftParser.LabdaCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLabdaCall(FunctionCraftParser.LabdaCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterLoopLoop(FunctionCraftParser.LoopLoopContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -215,18 +215,6 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBodyLoop(FunctionCraftParser.BodyLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStatement(FunctionCraftParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatement(FunctionCraftParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -280,49 +268,25 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIfInside(FunctionCraftParser.IfInsideContext ctx) { }
+	@Override public void enterArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIfInside(FunctionCraftParser.IfInsideContext ctx) { }
+	@Override public void exitArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAfterIf(FunctionCraftParser.AfterIfContext ctx) { }
+	@Override public void enterAppendArgument(FunctionCraftParser.AppendArgumentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAfterIf(FunctionCraftParser.AfterIfContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNextIF(FunctionCraftParser.NextIFContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNextIF(FunctionCraftParser.NextIFContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBreakIF(FunctionCraftParser.BreakIFContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBreakIF(FunctionCraftParser.BreakIFContext ctx) { }
+	@Override public void exitAppendArgument(FunctionCraftParser.AppendArgumentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -364,13 +328,49 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListInside(FunctionCraftParser.ListInsideContext ctx) { }
+	@Override public void enterAfterIf(FunctionCraftParser.AfterIfContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListInside(FunctionCraftParser.ListInsideContext ctx) { }
+	@Override public void exitAfterIf(FunctionCraftParser.AfterIfContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIfInside(FunctionCraftParser.IfInsideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfInside(FunctionCraftParser.IfInsideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNextIF(FunctionCraftParser.NextIFContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNextIF(FunctionCraftParser.NextIFContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBreakIF(FunctionCraftParser.BreakIFContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBreakIF(FunctionCraftParser.BreakIFContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -388,13 +388,25 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVal(FunctionCraftParser.ValContext ctx) { }
+	@Override public void enterListInside(FunctionCraftParser.ListInsideContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVal(FunctionCraftParser.ValContext ctx) { }
+	@Override public void exitListInside(FunctionCraftParser.ListInsideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPattern(FunctionCraftParser.PatternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPattern(FunctionCraftParser.PatternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -412,13 +424,13 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPattern(FunctionCraftParser.PatternContext ctx) { }
+	@Override public void enterBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPattern(FunctionCraftParser.PatternContext ctx) { }
+	@Override public void exitBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -448,6 +460,18 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLen(FunctionCraftParser.LenContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLen(FunctionCraftParser.LenContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAppendStr(FunctionCraftParser.AppendStrContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -472,169 +496,13 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLen(FunctionCraftParser.LenContext ctx) { }
+	@Override public void enterAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLen(FunctionCraftParser.LenContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMathExpr(FunctionCraftParser.MathExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMathExpr(FunctionCraftParser.MathExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPerComp(FunctionCraftParser.PerCompContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPerComp(FunctionCraftParser.PerCompContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCompExpr(FunctionCraftParser.CompExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCompExpr(FunctionCraftParser.CompExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPerEqComp(FunctionCraftParser.PerEqCompContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPerEqComp(FunctionCraftParser.PerEqCompContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqCompExpr(FunctionCraftParser.EqCompExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqCompExpr(FunctionCraftParser.EqCompExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSingleLogic(FunctionCraftParser.SingleLogicContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSingleLogic(FunctionCraftParser.SingleLogicContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParLogic(FunctionCraftParser.ParLogicContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParLogic(FunctionCraftParser.ParLogicContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLogicExpr(FunctionCraftParser.LogicExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLogicExpr(FunctionCraftParser.LogicExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAppendArgument(FunctionCraftParser.AppendArgumentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAppendArgument(FunctionCraftParser.AppendArgumentContext ctx) { }
+	@Override public void exitAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -664,13 +532,133 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx) { }
+	@Override public void enterLogicExpr(FunctionCraftParser.LogicExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx) { }
+	@Override public void exitLogicExpr(FunctionCraftParser.LogicExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSingleLogic(FunctionCraftParser.SingleLogicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSingleLogic(FunctionCraftParser.SingleLogicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParLogic(FunctionCraftParser.ParLogicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParLogic(FunctionCraftParser.ParLogicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPerEqComp(FunctionCraftParser.PerEqCompContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPerEqComp(FunctionCraftParser.PerEqCompContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEqCompExpr(FunctionCraftParser.EqCompExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEqCompExpr(FunctionCraftParser.EqCompExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPerComp(FunctionCraftParser.PerCompContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPerComp(FunctionCraftParser.PerCompContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCompExpr(FunctionCraftParser.CompExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCompExpr(FunctionCraftParser.CompExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMathExpr(FunctionCraftParser.MathExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMathExpr(FunctionCraftParser.MathExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -683,6 +671,18 @@ public class FunctionCraftBaseListener implements FunctionCraftListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitType(FunctionCraftParser.TypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVal(FunctionCraftParser.ValContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVal(FunctionCraftParser.ValContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

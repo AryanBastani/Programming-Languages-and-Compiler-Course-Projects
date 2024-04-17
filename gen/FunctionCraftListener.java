@@ -37,16 +37,6 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitMain(FunctionCraftParser.MainContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#bodyFunction}.
-	 * @param ctx the parse tree
-	 */
-	void enterBodyFunction(FunctionCraftParser.BodyFunctionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#bodyFunction}.
-	 * @param ctx the parse tree
-	 */
-	void exitBodyFunction(FunctionCraftParser.BodyFunctionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#function}.
 	 * @param ctx the parse tree
 	 */
@@ -57,55 +47,15 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitFunction(FunctionCraftParser.FunctionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#returnInside}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#bodyFunction}.
 	 * @param ctx the parse tree
 	 */
-	void enterReturnInside(FunctionCraftParser.ReturnInsideContext ctx);
+	void enterBodyFunction(FunctionCraftParser.BodyFunctionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#returnInside}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#bodyFunction}.
 	 * @param ctx the parse tree
 	 */
-	void exitReturnInside(FunctionCraftParser.ReturnInsideContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#functionReturn}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#functionReturn}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#lambdaFunction}.
-	 * @param ctx the parse tree
-	 */
-	void enterLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#lambdaFunction}.
-	 * @param ctx the parse tree
-	 */
-	void exitLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#functionCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionCall(FunctionCraftParser.FunctionCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#functionCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionCall(FunctionCraftParser.FunctionCallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#labdaCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterLabdaCall(FunctionCraftParser.LabdaCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#labdaCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitLabdaCall(FunctionCraftParser.LabdaCallContext ctx);
+	void exitBodyFunction(FunctionCraftParser.BodyFunctionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#arguments}.
 	 * @param ctx the parse tree
@@ -127,16 +77,6 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitArgInside(FunctionCraftParser.ArgInsideContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#argumentsCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#argumentsCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#parameter}.
 	 * @param ctx the parse tree
 	 */
@@ -157,6 +97,66 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitParamInside(FunctionCraftParser.ParamInsideContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement(FunctionCraftParser.StatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement(FunctionCraftParser.StatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#lambdaFunction}.
+	 * @param ctx the parse tree
+	 */
+	void enterLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#lambdaFunction}.
+	 * @param ctx the parse tree
+	 */
+	void exitLambdaFunction(FunctionCraftParser.LambdaFunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#returnInside}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnInside(FunctionCraftParser.ReturnInsideContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#returnInside}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnInside(FunctionCraftParser.ReturnInsideContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#functionReturn}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#functionReturn}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionReturn(FunctionCraftParser.FunctionReturnContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCall(FunctionCraftParser.FunctionCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCall(FunctionCraftParser.FunctionCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#labdaCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabdaCall(FunctionCraftParser.LabdaCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#labdaCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabdaCall(FunctionCraftParser.LabdaCallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#loopLoop}.
 	 * @param ctx the parse tree
 	 */
@@ -176,16 +176,6 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBodyLoop(FunctionCraftParser.BodyLoopContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement(FunctionCraftParser.StatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement(FunctionCraftParser.StatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#forLoop}.
 	 * @param ctx the parse tree
@@ -227,45 +217,25 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitForRange(FunctionCraftParser.ForRangeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#ifInside}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#argumentsCall}.
 	 * @param ctx the parse tree
 	 */
-	void enterIfInside(FunctionCraftParser.IfInsideContext ctx);
+	void enterArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#ifInside}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#argumentsCall}.
 	 * @param ctx the parse tree
 	 */
-	void exitIfInside(FunctionCraftParser.IfInsideContext ctx);
+	void exitArgumentsCall(FunctionCraftParser.ArgumentsCallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#afterIf}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#appendArgument}.
 	 * @param ctx the parse tree
 	 */
-	void enterAfterIf(FunctionCraftParser.AfterIfContext ctx);
+	void enterAppendArgument(FunctionCraftParser.AppendArgumentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#afterIf}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#appendArgument}.
 	 * @param ctx the parse tree
 	 */
-	void exitAfterIf(FunctionCraftParser.AfterIfContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#nextIF}.
-	 * @param ctx the parse tree
-	 */
-	void enterNextIF(FunctionCraftParser.NextIFContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#nextIF}.
-	 * @param ctx the parse tree
-	 */
-	void exitNextIF(FunctionCraftParser.NextIFContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#breakIF}.
-	 * @param ctx the parse tree
-	 */
-	void enterBreakIF(FunctionCraftParser.BreakIFContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#breakIF}.
-	 * @param ctx the parse tree
-	 */
-	void exitBreakIF(FunctionCraftParser.BreakIFContext ctx);
+	void exitAppendArgument(FunctionCraftParser.AppendArgumentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#if}.
 	 * @param ctx the parse tree
@@ -297,15 +267,45 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitElse(FunctionCraftParser.ElseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#listInside}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#afterIf}.
 	 * @param ctx the parse tree
 	 */
-	void enterListInside(FunctionCraftParser.ListInsideContext ctx);
+	void enterAfterIf(FunctionCraftParser.AfterIfContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#listInside}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#afterIf}.
 	 * @param ctx the parse tree
 	 */
-	void exitListInside(FunctionCraftParser.ListInsideContext ctx);
+	void exitAfterIf(FunctionCraftParser.AfterIfContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#ifInside}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfInside(FunctionCraftParser.IfInsideContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#ifInside}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfInside(FunctionCraftParser.IfInsideContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#nextIF}.
+	 * @param ctx the parse tree
+	 */
+	void enterNextIF(FunctionCraftParser.NextIFContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#nextIF}.
+	 * @param ctx the parse tree
+	 */
+	void exitNextIF(FunctionCraftParser.NextIFContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#breakIF}.
+	 * @param ctx the parse tree
+	 */
+	void enterBreakIF(FunctionCraftParser.BreakIFContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#breakIF}.
+	 * @param ctx the parse tree
+	 */
+	void exitBreakIF(FunctionCraftParser.BreakIFContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#listVal}.
 	 * @param ctx the parse tree
@@ -317,15 +317,25 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitListVal(FunctionCraftParser.ListValContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#val}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#listInside}.
 	 * @param ctx the parse tree
 	 */
-	void enterVal(FunctionCraftParser.ValContext ctx);
+	void enterListInside(FunctionCraftParser.ListInsideContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#val}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#listInside}.
 	 * @param ctx the parse tree
 	 */
-	void exitVal(FunctionCraftParser.ValContext ctx);
+	void exitListInside(FunctionCraftParser.ListInsideContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#pattern}.
+	 * @param ctx the parse tree
+	 */
+	void enterPattern(FunctionCraftParser.PatternContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#pattern}.
+	 * @param ctx the parse tree
+	 */
+	void exitPattern(FunctionCraftParser.PatternContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#patternInside}.
 	 * @param ctx the parse tree
@@ -337,15 +347,15 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitPatternInside(FunctionCraftParser.PatternInsideContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#pattern}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#builtInsideFuns}.
 	 * @param ctx the parse tree
 	 */
-	void enterPattern(FunctionCraftParser.PatternContext ctx);
+	void enterBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#pattern}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#builtInsideFuns}.
 	 * @param ctx the parse tree
 	 */
-	void exitPattern(FunctionCraftParser.PatternContext ctx);
+	void exitBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#putPush}.
 	 * @param ctx the parse tree
@@ -367,6 +377,16 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitChopChomp(FunctionCraftParser.ChopChompContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#len}.
+	 * @param ctx the parse tree
+	 */
+	void enterLen(FunctionCraftParser.LenContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#len}.
+	 * @param ctx the parse tree
+	 */
+	void exitLen(FunctionCraftParser.LenContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#appendStr}.
 	 * @param ctx the parse tree
 	 */
@@ -387,145 +407,15 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitStrExpr(FunctionCraftParser.StrExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#len}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#assignmentExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterLen(FunctionCraftParser.LenContext ctx);
+	void enterAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#len}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#assignmentExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitLen(FunctionCraftParser.LenContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#builtInsideFuns}.
-	 * @param ctx the parse tree
-	 */
-	void enterBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#builtInsideFuns}.
-	 * @param ctx the parse tree
-	 */
-	void exitBuiltInsideFuns(FunctionCraftParser.BuiltInsideFunsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#postSingleMath}.
-	 * @param ctx the parse tree
-	 */
-	void enterPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#postSingleMath}.
-	 * @param ctx the parse tree
-	 */
-	void exitPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#preSingleMath}.
-	 * @param ctx the parse tree
-	 */
-	void enterPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#preSingleMath}.
-	 * @param ctx the parse tree
-	 */
-	void exitPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#addMinusExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#addMinusExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterMathExpr(FunctionCraftParser.MathExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitMathExpr(FunctionCraftParser.MathExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#perComp}.
-	 * @param ctx the parse tree
-	 */
-	void enterPerComp(FunctionCraftParser.PerCompContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#perComp}.
-	 * @param ctx the parse tree
-	 */
-	void exitPerComp(FunctionCraftParser.PerCompContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#compExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompExpr(FunctionCraftParser.CompExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#compExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompExpr(FunctionCraftParser.CompExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#perEqComp}.
-	 * @param ctx the parse tree
-	 */
-	void enterPerEqComp(FunctionCraftParser.PerEqCompContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#perEqComp}.
-	 * @param ctx the parse tree
-	 */
-	void exitPerEqComp(FunctionCraftParser.PerEqCompContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#eqCompExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqCompExpr(FunctionCraftParser.EqCompExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#eqCompExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqCompExpr(FunctionCraftParser.EqCompExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#singleLogic}.
-	 * @param ctx the parse tree
-	 */
-	void enterSingleLogic(FunctionCraftParser.SingleLogicContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#singleLogic}.
-	 * @param ctx the parse tree
-	 */
-	void exitSingleLogic(FunctionCraftParser.SingleLogicContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#parLogic}.
-	 * @param ctx the parse tree
-	 */
-	void enterParLogic(FunctionCraftParser.ParLogicContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#parLogic}.
-	 * @param ctx the parse tree
-	 */
-	void exitParLogic(FunctionCraftParser.ParLogicContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#logicExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterLogicExpr(FunctionCraftParser.LogicExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#logicExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitLogicExpr(FunctionCraftParser.LogicExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#appendArgument}.
-	 * @param ctx the parse tree
-	 */
-	void enterAppendArgument(FunctionCraftParser.AppendArgumentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#appendArgument}.
-	 * @param ctx the parse tree
-	 */
-	void exitAppendArgument(FunctionCraftParser.AppendArgumentContext ctx);
+	void exitAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#appendExpr}.
 	 * @param ctx the parse tree
@@ -547,15 +437,115 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 */
 	void exitAppendInside(FunctionCraftParser.AppendInsideContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link FunctionCraftParser#assignmentExpr}.
+	 * Enter a parse tree produced by {@link FunctionCraftParser#logicExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx);
+	void enterLogicExpr(FunctionCraftParser.LogicExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link FunctionCraftParser#assignmentExpr}.
+	 * Exit a parse tree produced by {@link FunctionCraftParser#logicExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitAssignmentExpr(FunctionCraftParser.AssignmentExprContext ctx);
+	void exitLogicExpr(FunctionCraftParser.LogicExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#singleLogic}.
+	 * @param ctx the parse tree
+	 */
+	void enterSingleLogic(FunctionCraftParser.SingleLogicContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#singleLogic}.
+	 * @param ctx the parse tree
+	 */
+	void exitSingleLogic(FunctionCraftParser.SingleLogicContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#parLogic}.
+	 * @param ctx the parse tree
+	 */
+	void enterParLogic(FunctionCraftParser.ParLogicContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#parLogic}.
+	 * @param ctx the parse tree
+	 */
+	void exitParLogic(FunctionCraftParser.ParLogicContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#perEqComp}.
+	 * @param ctx the parse tree
+	 */
+	void enterPerEqComp(FunctionCraftParser.PerEqCompContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#perEqComp}.
+	 * @param ctx the parse tree
+	 */
+	void exitPerEqComp(FunctionCraftParser.PerEqCompContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#eqCompExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqCompExpr(FunctionCraftParser.EqCompExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#eqCompExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqCompExpr(FunctionCraftParser.EqCompExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#perComp}.
+	 * @param ctx the parse tree
+	 */
+	void enterPerComp(FunctionCraftParser.PerCompContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#perComp}.
+	 * @param ctx the parse tree
+	 */
+	void exitPerComp(FunctionCraftParser.PerCompContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#compExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompExpr(FunctionCraftParser.CompExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#compExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompExpr(FunctionCraftParser.CompExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#mathExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterMathExpr(FunctionCraftParser.MathExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#mathExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitMathExpr(FunctionCraftParser.MathExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#addMinusExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#addMinusExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddMinusExpr(FunctionCraftParser.AddMinusExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#preSingleMath}.
+	 * @param ctx the parse tree
+	 */
+	void enterPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#preSingleMath}.
+	 * @param ctx the parse tree
+	 */
+	void exitPreSingleMath(FunctionCraftParser.PreSingleMathContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#postSingleMath}.
+	 * @param ctx the parse tree
+	 */
+	void enterPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#postSingleMath}.
+	 * @param ctx the parse tree
+	 */
+	void exitPostSingleMath(FunctionCraftParser.PostSingleMathContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link FunctionCraftParser#type}.
 	 * @param ctx the parse tree
@@ -566,4 +556,14 @@ public interface FunctionCraftListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitType(FunctionCraftParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link FunctionCraftParser#val}.
+	 * @param ctx the parse tree
+	 */
+	void enterVal(FunctionCraftParser.ValContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link FunctionCraftParser#val}.
+	 * @param ctx the parse tree
+	 */
+	void exitVal(FunctionCraftParser.ValContext ctx);
 }
