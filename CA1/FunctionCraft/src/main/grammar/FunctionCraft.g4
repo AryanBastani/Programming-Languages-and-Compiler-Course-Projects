@@ -427,19 +427,15 @@ perComp
 compExpr
     :
     perComp
+    (
     GEQ
-    perComp
     |
-    perComp
     LEQ
-    perComp
     |
-    perComp
     GTR
-    perComp
     |
-    perComp
     LES
+    )
     perComp
     |
     mathExpr
