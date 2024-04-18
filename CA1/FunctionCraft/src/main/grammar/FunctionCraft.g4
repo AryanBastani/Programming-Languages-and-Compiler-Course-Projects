@@ -1,20 +1,14 @@
 grammar FunctionCraft;
 
-comment
-    :
-    ONE_COMMENT
-    | MULTI_COMMENT
-    ;
-
 program
     :
-    (function | comment)*
+    (function | pattern)*
     main
-    comment*
     ;
 
 main
     :
+    {System.out.println("MAIN");}
     FUN_STARTER
     MAIN
     LPAR
@@ -26,7 +20,7 @@ main
 function
     :
     FUN_STARTER
-    INDENTIFIER
+    name = INDENTIFIER {System.out.println("FuncDec: " + $name.text);}
     arguments
     bodyFunction
     ENDER
@@ -86,17 +80,19 @@ statement
         | lambdaFunction
         | labdaCall
         | pattern
+        | appendExpr
+        | patternCall
     )
     SEMICOLON
     )
-    | comment
     | if
-    | forLoop
-    | loopLoop
+    | forLoop {System.out.println("Built-in: FOR");}
+    | loopLoop {System.out.println("Built-in: DO");}
     ;
 
 lambdaFunction
     :
+    LAMBDA_STARTER {System.out.println("LAMBDA");}
     arguments
     LBRACE
     bodyFunction
@@ -105,24 +101,27 @@ lambdaFunction
 
 returnInside
     :
+    (
     LPAR
     appendArgument
     RPAR
+    )
     |
     appendArgument
     ;
 
 functionReturn
     :
-    RETURN
-    returnInside
-    SEMICOLON
+    RETURN {System.out.println("RETURN");}
+    returnInside?
     ;
 
 functionCall
     :
-    INDENTIFIER
+    INDENTIFIER {System.out.println("Function Call");}
+    LPAR
     argumentsCall
+    RPAR
     ;
 labdaCall
     :
@@ -140,7 +139,11 @@ loopLoop
 
 bodyLoop
     :
-    (statement | LOOP_CONTINUE | BREAK | nextIF | breakIF)*
+    (statement |
+    LOOP_CONTINUE {System.out.println("NEXT");}|
+    BREAK | {System.out.println("BREAK");}
+    nextIF | {System.out.println("NEXT");}
+    breakIF {System.out.println("BREAK");})*
     ;
 forLoop
     :
@@ -192,32 +195,28 @@ appendArgument
     :
     appendExpr
     |
-    val
-    appendInside
-    |
     listVal
     ;
 
 if
     :
-    IF
+    IF {System.out.println("Decision: IF");}
     ifInside
     (statement|elif)*
-    else
+    else?
     ENDER
     ;
 
 elif
     :
-    ELSEIF
+    ELSEIF {System.out.println("Decision: ELSE IF");}
     ifInside
     bodyFunction
     ;
 
 else
     :
-    ELSE
-    ifInside
+    ELSE {System.out.println("Decision: ELSE");}
     bodyFunction
     ;
 
@@ -252,6 +251,7 @@ listVal
     LBRACKET
     listInside
     RBRACKET
+    |
     ;
 
 listInside
@@ -263,16 +263,26 @@ listInside
 pattern
     :
     PATTERN_SIGN
-    INDENTIFIER
+    name = INDENTIFIER {System.out.println("patternDec: " + $name.text);}
     arguments
     patternInside
     SEMICOLON
     ;
+
+patternCall
+    :
+    INDENTIFIER
+    DOT
+    MATCH {System.out.println("Built-in: MATCH");}
+    LPAR
+    argumentsCall
+    RPAR
+    ;
+
 patternInside
     :
     (
     TAB
-    OR
     assignmentExpr
     )*
     ;
@@ -289,9 +299,9 @@ builtInsideFuns
 putPush
     :
     (
-    PRINT
+    PRINT {System.out.println("Built-in: PUTS");}
     |
-    PUSH
+    PUSH {System.out.println("Built-in: PUSH");}
     )
     LPAR
     appendExpr
@@ -301,18 +311,18 @@ putPush
 chopChomp
     :
     (
-    CHOP
+    CHOP {System.out.println("Built-in: CHOP");}
     |
-    CHOMP
+    CHOMP {System.out.println("Built-in: CHOMP");}
     )
     LPAR
-    strExpr
+    appendExpr
     RPAR
     ;
 
 len
     :
-    LEN
+    LEN {System.out.println("Built-in: LEN");}
     LPAR
     (
     appendExpr
@@ -324,7 +334,7 @@ len
 
 appendStr
     :
-    APPEND_SIGN
+    APPEND_SIGN {System.out.println("Operator: <<");}
     (
     appendStr
     |
@@ -341,46 +351,51 @@ strExpr
     |
     STRING_VAL
     )
-    appendStr
+    appendStr?
     ;
 
 assignmentExpr
     :
-    type?
-    INDENTIFIER
+    name = appendExpr {System.out.println("Assignment: " + $name.text);}
     (
-    ASSIGN
+    ASSIGN {System.out.println("Operator: =");}
     |
-    ADD_ASSIGN
+    ADD_ASSIGN {System.out.println("Operator: +=");}
     |
-    MINUS_ASSIGN
+    MINUS_ASSIGN {System.out.println("Operator: -=");}
     |
-    MULT_ASSIGN
+    MULT_ASSIGN {System.out.println("Operator: *=");}
     |
-    DIV_ASSGIN
+    DIV_ASSGIN {System.out.println("Operator: /=");}
     |
-    MOD_ASSIGN
+    MOD_ASSIGN {System.out.println("Operator: %=");}
     )
     appendExpr
-    SEMICOLON
     ;
 
 appendExpr
     :
-    INDENTIFIER
-    appendInside
-    ;
-
-appendInside
-    :
-    APPEND_SIGN
-    (logicExpr | appendInside)
+    (logicExpr
+    (itemAcces)?
+    APPEND_SIGN {System.out.println("Operator: <<");})
+    appendExpr
+    |
+    logicExpr
     ;
 
 logicExpr
     :
+    logicExpr2
+    (LOG_AND {System.out.println("Operator: &&");} | LOG_OR {System.out.println("Operator: ||");})
+    logicExpr2
+    |
+    singleLogic
+    ;
+
+logicExpr2
+    :
     parLogic
-    (LOG_AND | LOG_OR)
+    (LOG_AND {System.out.println("Operator: &&");}| LOG_OR {System.out.println("Operator: ||");})
     parLogic
     |
     singleLogic
@@ -413,33 +428,35 @@ perEqComp
 
 eqCompExpr
     :
-    perEqComp
-    (EQL | NEQ)
-    perEqComp
+    eqCompExpr2
+    (EQL{System.out.println("Operator: ==");} | NEQ{System.out.println("Operator: !=");})
+    eqCompExpr2
     |
     compExpr
     ;
 
-perComp
+eqCompExpr2
     :
-    LPAR
+    perEqComp
+    (EQL{System.out.println("Operator: ==");} | NEQ{System.out.println("Operator: !=");})
+    perEqComp
+    |
     compExpr
-    RPAR
     ;
 
 compExpr
     :
-    perComp
+    compExpr
     (
-    GEQ
+    GEQ {System.out.println("Operator: >=");}
     |
-    LEQ
+    LEQ {System.out.println("Operator: <=");}
     |
-    GTR
+    GTR {System.out.println("Operator: >");}
     |
-    LES
+    LES {System.out.println("Operator: <");}
     )
-    perComp
+    compExpr
     |
     mathExpr
     ;
@@ -447,41 +464,58 @@ compExpr
 mathExpr
     :
     addMinusExpr
-    ((PLUS | MINUS)
+    ((PLUS{System.out.println("Operator: +" );} | MINUS{System.out.println("Operator: -");})
     mathExpr)?
     ;
 
 addMinusExpr
     :
     preSingleMath
-    ((MULT | DIV | MOD)
+    ((MULT {System.out.println("Operator: *");} | DIV {System.out.println("Operator: /");} | {System.out.println("Operator: %");} MOD)
     addMinusExpr)?
     ;
 
 preSingleMath
     :
-    (MINUS | NOT)?
+    (MINUS{System.out.println("Operator: -");} | NOT{System.out.println("Operator: !");})?
     postSingleMath
     ;
 
 postSingleMath
     :
     INDENTIFIER
-    (INC | DEC)?
+    (INC{System.out.println("Operator: ++");} | DEC{System.out.println("Operator: --");})?
     |
-    (INT_VAL | FLOAT_VAL)
+    val
     |
     LPAR
-    logicExpr
+    appendExpr
     RPAR
-    (INC | DEC)?
+    (INC{System.out.println("Operator: ++");} | DEC{System.out.println("Operator: --");})?
     |
     INDENTIFIER
+    itemAcces
+    (INC{System.out.println("Operator: ++");} | DEC{System.out.println("Operator: --");})?
+    |
+    builtInsideFuns
+    |
+    functionCall
+    |
+    patternCall
+    |
+    lambdaFunction
+    ;
+
+itemAcces:
+    (
     LBRACKET
     logicExpr
     RBRACKET
-    (INC | DEC)?
+    )
+    *
     ;
+
+
 
 type
     :
@@ -504,14 +538,21 @@ val
     |
     FLOAT_VAL
     |
-    BOOL_VAL
+    booolVal
     |
     STRING_VAL
     |
     FUN_POINTER_VAL
+    |
+    listVal
     ;
 
-
+booolVal
+    :
+    TRUE
+    |
+    FALSE
+    ;
 
 
 // Keywords:
@@ -539,6 +580,8 @@ DO: 'do';
 FOR: 'for';
 IN: 'in';
 
+INDENTIFIER: [a-z][a-zA-Z0-9_]*;
+
 // Data Types:
 INT: 'int';
 FLOAT: 'float';
@@ -548,11 +591,10 @@ LIST: 'list';
 FUN_POINTER: 'fptr';
 
 // Data Values:
-INT_VAL: [1-9][0-9]*;
+INT_VAL: [0-9]+;
 FLOAT_VAL: INT_VAL'.'[0-9]*;
 STRING_VAL: '"'~["]*'"';
-BOOL_VAL: TRUE|FALSE;
-FUN_POINTER_VAL: METHOD'(:'[a-z][a-zA-Z0-9_]*')';
+FUN_POINTER_VAL: 'method''(:'[a-z][a-zA-Z0-9_]*')';
 
 // Parenthesis:
 LPAR: '(';
@@ -617,6 +659,5 @@ ONE_COMMENT: '#' ~[\r\n]* -> skip;
 MULTI_COMMENT: '=begin' .*? '=end' -> skip;
 
 // Others:
-INDENTIFIER: [a-z][a-zA-Z0-9_]*;
-TAB: '\r\n\t' | '\r\n    ';
+TAB:  ('\r'?'\n')('\t|' | '    |');
 WS: [ TAB\r\n]+ -> skip;
