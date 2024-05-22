@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PLC-Course-CAs.iml" filepath="$PROJECT_DIR$/.idea/PLC-Course-CAs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FunctionCraft.iml" filepath="$PROJECT_DIR$/FunctionCraft.iml" />
     </modules>
   </component>
 </project>
