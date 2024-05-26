@@ -90,7 +90,8 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(MainDeclaration mainDeclaration){
-        //TODO:visit main
+        for(Statement statement : mainDeclaration.getBody())
+            statement.accept(this);
         return null;
     }
     @Override
@@ -162,6 +163,7 @@ public class TypeChecker extends Visitor<Type> {
         else{
             VarItem newVarItem = new VarItem(assignStatement.getAssignedId());
             // TODO:maybe new type for a variable
+            newVarItem.setType(assignStatement.getAssignExpression().accept(this));
             try {
                 SymbolTable.top.put(newVarItem);
             }catch (ItemAlreadyExists ignored){}
@@ -230,9 +232,22 @@ public class TypeChecker extends Visitor<Type> {
         return appendeeType;
     }
     @Override
-    public Type visit(BinaryExpression binaryExpression){
-        //TODO:visit binary expression
-        return null;
+    public Type visit(BinaryExpression binaryExpression) {
+        Type firstType = binaryExpression.getFirstOperand().accept(this);
+        Type secondType = binaryExpression.getSecondOperand().accept(this);
+
+        if(!firstType.sameType(secondType)) {
+            typeErrors.add(new NonSameOperands(binaryExpression.getLine(), binaryExpression.getOperator()));
+            return (new NoType());
+        }
+
+        if(!(firstType instanceof IntType || firstType instanceof  FloatType)){
+            typeErrors.add(new UnsupportedOperandType(binaryExpression.getLine(),
+                    binaryExpression.getOperator().toString()));
+            return (new NoType());
+        }
+        
+        return (firstType);
     }
     @Override
     public Type visit(UnaryExpression unaryExpression){
