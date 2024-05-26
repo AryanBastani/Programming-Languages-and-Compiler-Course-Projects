@@ -246,13 +246,29 @@ public class TypeChecker extends Visitor<Type> {
                     binaryExpression.getOperator().toString()));
             return (new NoType());
         }
-        
+
         return (firstType);
     }
     @Override
     public Type visit(UnaryExpression unaryExpression){
-        //TODO:visit unaryExpression
-        return null;
+        Type operandType = unaryExpression.getExpression().accept(this);
+        UnaryOperator operator = unaryExpression.getOperator();
+        boolean unsupported = false;
+
+        if(operator == UnaryOperator.NOT){
+            if(!(operandType instanceof BoolType))
+                unsupported = true;
+        }
+        else if(!((operandType instanceof IntType) || (operandType instanceof  FloatType)))
+            unsupported = true;
+
+        if(unsupported){
+            typeErrors.add(new UnsupportedOperandType(unaryExpression.getLine(),
+                    unaryExpression.getOperator().toString()));
+            return (new NoType());
+        }
+
+        return (operandType);
     }
     @Override
     public Type visit(ChompStatement chompStatement){

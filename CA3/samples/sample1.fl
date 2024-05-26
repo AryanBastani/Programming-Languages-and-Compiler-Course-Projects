@@ -9,5 +9,6 @@ def f(a, b, [c = 10])
 end
 
 def main()
-   a = 1 + 123;
+    a = 123;
+   gg = ++a;
 end
