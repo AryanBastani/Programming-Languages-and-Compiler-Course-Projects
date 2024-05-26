@@ -9,6 +9,6 @@ def f(a, b, [c = 10])
 end
 
 def main()
-    a = 123;
-   gg = ++a;
+    a = "asdas";
+   gg = a + "123";
 end

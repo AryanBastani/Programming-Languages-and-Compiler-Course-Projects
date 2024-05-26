@@ -285,8 +285,12 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(Identifier identifier){
-        // TODO:visit Identifier
-        return null;
+        try {
+            VarItem var = (VarItem) SymbolTable.top.getItem(VarItem.START_KEY + identifier.getName());
+            return var.getType();
+        }catch (ItemNotFound ignored){}
+
+        return new NoType();
     }
     @Override
     public Type visit(LenStatement lenStatement){
