@@ -235,19 +235,23 @@ public class TypeChecker extends Visitor<Type> {
     public Type visit(BinaryExpression binaryExpression) {
         Type firstType = binaryExpression.getFirstOperand().accept(this);
         Type secondType = binaryExpression.getSecondOperand().accept(this);
+        boolean accepted = true;
 
         if(!firstType.sameType(secondType)) {
             typeErrors.add(new NonSameOperands(binaryExpression.getLine(), binaryExpression.getOperator()));
-            return (new NoType());
+            accepted = false;
         }
 
-        if(!(firstType instanceof IntType || firstType instanceof  FloatType)){
+        if((!(firstType instanceof IntType || firstType instanceof  FloatType)) ||
+                (!(secondType instanceof  IntType || secondType instanceof  FloatType))){
             typeErrors.add(new UnsupportedOperandType(binaryExpression.getLine(),
                     binaryExpression.getOperator().toString()));
-            return (new NoType());
+            accepted = false;
         }
 
-        return (firstType);
+        if(!accepted)
+            return  new NoType();
+        return firstType;
     }
     @Override
     public Type visit(UnaryExpression unaryExpression){
