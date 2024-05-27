@@ -9,6 +9,7 @@ def f(a, b, [c = 10])
 end
 
 def main()
-    b = 123132;
-    a = len(b);
+    for i in [1, "asd"]
+        a = 12;
+    end
 end

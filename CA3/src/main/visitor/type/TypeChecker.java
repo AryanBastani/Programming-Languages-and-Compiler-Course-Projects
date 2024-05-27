@@ -215,8 +215,17 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(ListValue listValue){
-        // TODO:visit listValue
-        return null;
+        Type prevType = null;
+        if(listValue.getElements().size() == 0)
+            return new NoType();
+        prevType = listValue.getElements().get(0).accept(this);
+        for(Expression currentVal : listValue.getElements()){
+            if(!prevType.sameType(currentVal.accept(this))){
+                typeErrors.add(new ListElementsTypesMisMatch(listValue.getLine()));
+                return(new NoType());
+            }
+        }
+        return prevType;
     }
     @Override
     public Type visit(FunctionPointer functionPointer){
@@ -295,7 +304,6 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(LenStatement lenStatement){
-        //TODO:visit LenStatement.Be carefull about the return type of LenStatement.
         Type exprType = lenStatement.getExpression().accept(this);
         if(! (exprType instanceof IntType)){
             typeErrors.add(new LenArgumentTypeMisMatch(lenStatement.getLine()));
