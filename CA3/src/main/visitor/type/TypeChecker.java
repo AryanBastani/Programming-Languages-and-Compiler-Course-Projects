@@ -327,8 +327,18 @@ public class TypeChecker extends Visitor<Type> {
 
         if(rangeType.equals(RangeType.LIST)){
             // TODO --> mind that the lists are declared explicitly in the grammar in this node, so handle the errors
+            if(rangeExpression.getRangeExpressions().size() == 0)
+                return new NoType();
+            Type firstType = rangeExpression.getRangeExpressions().get(0).accept(this);
+            for(Expression currentExpr : rangeExpression.getRangeExpressions()){
+                if(!currentExpr.accept(this).sameType(firstType)){
+                    typeErrors.add(new ListElementsTypesMisMatch(rangeExpression.getLine()));
+                    return new NoType();
+                }
+            }
+            return firstType;
         }
 
-        return new NoType();
+        return new IntType();
     }
 }
