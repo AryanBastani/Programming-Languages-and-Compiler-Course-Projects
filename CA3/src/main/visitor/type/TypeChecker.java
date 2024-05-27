@@ -296,7 +296,12 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(LenStatement lenStatement){
         //TODO:visit LenStatement.Be carefull about the return type of LenStatement.
-        return null;
+        Type exprType = lenStatement.getExpression().accept(this);
+        if(! (exprType instanceof IntType)){
+            typeErrors.add(new LenArgumentTypeMisMatch(lenStatement.getLine()));
+            return new NoType();
+            }
+        return new IntType();
     }
     @Override
     public Type visit(MatchPatternStatement matchPatternStatement){
