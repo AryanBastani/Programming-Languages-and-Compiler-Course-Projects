@@ -170,17 +170,27 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(AssignStatement assignStatement){
         if(assignStatement.isAccessList()){
-            // TODO:assignment to list
+            try {
+                VarItem assignedTo= (VarItem) SymbolTable.top.getItem(VarItem.START_KEY + assignStatement.getAssignedId().getName());
+                Type assignedToType = assignedTo.getType();
+
+                if (!(assignStatement.getAccessListExpression().accept(this) instanceof IntType))
+                    typeErrors.add(new AccessIndexIsNotInt(assignStatement.getLine()));
+                else if (!(assignedToType instanceof StringType) && !(assignedToType instanceof ListType))
+                    typeErrors.add(new IsNotIndexable(assignStatement.getLine()));
+            }
+            catch (ItemNotFound ignored){}
         }
         else{
             VarItem newVarItem = new VarItem(assignStatement.getAssignedId());
-            newVarItem.setType(assignStatement.getAssignExpression().accept(this));
+            Type newType = assignStatement.getAssignExpression().accept(this);
+            newVarItem.setType(newType);
             try {
                 SymbolTable.top.put(newVarItem);
             }catch (ItemAlreadyExists notIgnored){
                 try {
-                    VarItem var = (VarItem)SymbolTable.top.getItem(VarItem.START_KEY + assignStatement.getAssignedId().toString());
-                    var.setType(assignStatement.getAssignExpression().accept(this));
+                    VarItem var = (VarItem)SymbolTable.top.getItem(VarItem.START_KEY + assignStatement.getAssignedId().getName());
+                    var.setType(newType);
                 }catch (ItemNotFound ignored){}
             }
         }
