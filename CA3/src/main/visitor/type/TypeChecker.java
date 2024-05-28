@@ -83,31 +83,42 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(PatternDeclaration patternDeclaration){
         SymbolTable.push(new SymbolTable());
+        boolean hasError = false;
         try {
             PatternItem patternItem = (PatternItem) SymbolTable.root.getItem(PatternItem.START_KEY +
                     patternDeclaration.getPatternName().getName());
             VarItem varItem = new VarItem(patternDeclaration.getTargetVariable());
             varItem.setType(patternItem.getTargetVarType());
+
             try {
                 SymbolTable.top.put(varItem);
             }catch (ItemAlreadyExists ignored){}
             for(Expression expression : patternDeclaration.getConditions()){
                 if(!(expression.accept(this) instanceof BoolType)){
                     typeErrors.add(new ConditionIsNotBool(expression.getLine()));
-                    SymbolTable.pop();
-                    return new NoType();
+                    hasError = true;
                 }
             }
-//        for(Expression currentExpr : patternDeclaration.getReturnExp()){
-//            if(currentExpr.accept(this)){
-//
-//            }
-//        }
-        }catch (ItemNotFound ignored){}
+            if(patternDeclaration.getReturnExp().size() == 0) {
+                SymbolTable.pop();
+                return new NoType();
+            }
 
-
-        SymbolTable.pop();
-        return null;
+            Type firstReturnType = patternDeclaration.getReturnExp().getFirst().accept(this);
+            for(int exprId = 1; exprId < patternDeclaration.getReturnExp().size(); exprId++){
+                if(!(patternDeclaration.getReturnExp().get(exprId).accept(this).sameType(firstReturnType))){
+                    typeErrors.add(new PatternIncompatibleReturnTypes(patternDeclaration.getLine(),
+                            patternDeclaration.getPatternName().getName()));
+                    hasError = true;
+                    break;
+                }
+            }
+            SymbolTable.pop();
+            if(hasError)
+                return new NoType();
+            else
+                return firstReturnType;
+        }catch (ItemNotFound ignored){return new NoType();}
     }
     @Override
     public Type visit(MainDeclaration mainDeclaration){
@@ -120,15 +131,20 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(AccessExpression accessExpression){
         if(accessExpression.isFunctionCall()){
+            FunctionItem functionItem = null;
             try {
-                FunctionItem functionItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY +
+                functionItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY +
                         ((Identifier) accessExpression.getAccessedExpression()).getName());
-                ArrayList<Type> argTypes = new ArrayList<>();
-                for(Expression currentExpr : accessExpression.getArguments())
-                    argTypes.add(currentExpr.accept(this));
-                functionItem.setArgumentTypes(argTypes);
-                return(functionItem.getFunctionDeclaration().accept(this));
-            }catch (ItemNotFound ignored){return null;}
+            }catch (ItemNotFound notIgnored){
+                accessExpression.getAccessedExpression().accept(this);
+//                accessExpression.getAccessedExpression()
+            }
+
+            ArrayList<Type> argTypes = new ArrayList<>();
+            for(Expression currentExpr : accessExpression.getArguments())
+                argTypes.add(currentExpr.accept(this));
+            functionItem.setArgumentTypes(argTypes);
+            return(functionItem.getFunctionDeclaration().accept(this));
         }
         else {
             Type accessedType = accessExpression.getAccessedExpression().accept(this);
@@ -304,8 +320,8 @@ public class TypeChecker extends Visitor<Type> {
         if(listValue.getElements().size() == 0)
             return new ListType(new NoType());
         prevType = listValue.getElements().get(0).accept(this);
-        for(Expression currentVal : listValue.getElements()){
-            if(!prevType.sameType(currentVal.accept(this))){
+        for(int exprId = 1; exprId < listValue.getElements().size(); exprId++){
+            if(!prevType.sameType(listValue.getElements().get(exprId).accept(this))){
                 typeErrors.add(new ListElementsTypesMisMatch(listValue.getLine()));
                 return(new NoType());
             }
@@ -422,8 +438,8 @@ public class TypeChecker extends Visitor<Type> {
             if(rangeExpression.getRangeExpressions().size() == 0)
                 return new NoType();
             Type firstType = rangeExpression.getRangeExpressions().get(0).accept(this);
-            for(Expression currentExpr : rangeExpression.getRangeExpressions()){
-                if(!currentExpr.accept(this).sameType(firstType)){
+            for(int exprId = 1; exprId < rangeExpression.getRangeExpressions().size(); exprId++){
+                if(!rangeExpression.getRangeExpressions().get(exprId).accept(this).sameType(firstType)){
                     typeErrors.add(new ListElementsTypesMisMatch(rangeExpression.getLine()));
                     return new NoType();
                 }
