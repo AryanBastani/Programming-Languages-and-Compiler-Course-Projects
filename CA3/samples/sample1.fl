@@ -1,12 +1,17 @@
-
-def f()
-    if(true)
-        return(1);
-    else
-        return(123);
+def fib(n)
+    if ((n == 1) || (n == 2))
+        return 1;
     end
+    return fib2(n);
+end
+
+def fib2(x)
+    x = "aaa";
+    push(x, "bbb");
+    return len(x);
 end
 
 def main()
-    a = f();
+    f.
 end
+

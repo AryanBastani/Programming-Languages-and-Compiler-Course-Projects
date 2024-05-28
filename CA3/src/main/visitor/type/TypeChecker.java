@@ -58,7 +58,10 @@ public class TypeChecker extends Visitor<Type> {
             ArrayList<Type> currentArgTypes = functionItem.getArgumentTypes();
             for (int i = 0; i < functionDeclaration.getArgs().size(); i++) {
                 VarItem argItem = new VarItem(functionDeclaration.getArgs().get(i).getName());
-                argItem.setType(currentArgTypes.get(i));
+                if(functionDeclaration.getArgs().get(i).getDefaultVal() != null)
+                    argItem.setType(functionDeclaration.getArgs().get(i).getDefaultVal().accept(this));
+                else
+                    argItem.setType(currentArgTypes.get(i));
                 try {
                     SymbolTable.top.put(argItem);
                 }catch (ItemAlreadyExists ignored){}
@@ -95,7 +98,11 @@ public class TypeChecker extends Visitor<Type> {
                     return new NoType();
                 }
             }
-        //TODO:1-figure out whether return expression of different cases in pattern are of the same type/2-return the infered type
+//        for(Expression currentExpr : patternDeclaration.getReturnExp()){
+//            if(currentExpr.accept(this)){
+//
+//            }
+//        }
         }catch (ItemNotFound ignored){}
 
 
@@ -202,11 +209,14 @@ public class TypeChecker extends Visitor<Type> {
             try {
                 VarItem assignedTo= (VarItem) SymbolTable.top.getItem(VarItem.START_KEY + assignStatement.getAssignedId().getName());
                 Type assignedToType = assignedTo.getType();
+                Type newType = assignStatement.getAssignExpression().accept(this);
 
                 if (!(assignStatement.getAccessListExpression().accept(this) instanceof IntType))
                     typeErrors.add(new AccessIndexIsNotInt(assignStatement.getLine()));
-                else if (!(assignedToType instanceof StringType) && !(assignedToType instanceof ListType))
+                if (!(assignedToType instanceof StringType) && !(assignedToType instanceof ListType))
                     typeErrors.add(new IsNotIndexable(assignStatement.getLine()));
+                if (assignedToType instanceof ListType && !(((ListType)assignedToType).getType().sameType(newType)))
+                    typeErrors.add(new ListElementsTypesMisMatch(assignStatement.getLine()));
             }
             catch (ItemNotFound ignored){}
         }
@@ -292,7 +302,7 @@ public class TypeChecker extends Visitor<Type> {
     public Type visit(ListValue listValue){
         Type prevType = null;
         if(listValue.getElements().size() == 0)
-            return new ListType(new ListType(new NoType()));
+            return new ListType(new NoType());
         prevType = listValue.getElements().get(0).accept(this);
         for(Expression currentVal : listValue.getElements()){
             if(!prevType.sameType(currentVal.accept(this))){
@@ -334,7 +344,13 @@ public class TypeChecker extends Visitor<Type> {
             return new NoType();
         }
 
-        return firstType;
+        if(binaryExpression.getOperator() == BinaryOperator.PLUS ||
+            binaryExpression.getOperator() == BinaryOperator.DIVIDE ||
+            binaryExpression.getOperator() == BinaryOperator.MINUS ||
+            binaryExpression.getOperator() == BinaryOperator.MULT)
+            return  firstType;
+        else
+            return new BoolType();
     }
     @Override
     public Type visit(UnaryExpression unaryExpression){
@@ -382,7 +398,7 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(LenStatement lenStatement){
         Type exprType = lenStatement.getExpression().accept(this);
-        if(! (exprType instanceof IntType)){
+        if(!(exprType instanceof StringType) && !(exprType instanceof ListType)){
             typeErrors.add(new LenArgumentTypeMisMatch(lenStatement.getLine()));
             return new NoType();
             }
