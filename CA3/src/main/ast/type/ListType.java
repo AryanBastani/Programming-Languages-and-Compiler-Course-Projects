@@ -4,7 +4,7 @@ import main.ast.type.Type;
 
 public class ListType extends Type {
     private Type type;
-//    private boolean typeSet;
+    private boolean typeSet;
 
     public ListType(Type type) {
         this.type = type;
@@ -18,13 +18,13 @@ public class ListType extends Type {
         this.type = type;
     }
 
-//    public boolean isTypeSet() {
-//        return typeSet;
-//    }
+    public boolean isTypeSet() {
+        return typeSet;
+    }
 
-//    public void setTypeSet(boolean typeSet) {
-//        this.typeSet = typeSet;
-//    }
+    public void setTypeSet(boolean typeSet) {
+        this.typeSet = typeSet;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

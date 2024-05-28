@@ -1,5 +1,6 @@
 package main.visitor.type;
 
+import com.sun.jdi.CharType;
 import main.ast.nodes.Program;
 import main.ast.nodes.declaration.*;
 import main.ast.nodes.expression.*;
@@ -98,6 +99,7 @@ public class TypeChecker extends Visitor<Type> {
     public Type visit(AccessExpression accessExpression){
         if(accessExpression.isFunctionCall()){
             //TODO:function is called here.set the arguments type and visit its declaration
+            return null;
         }
         else{
             Type accessedType = accessExpression.getAccessedExpression().accept(this);
@@ -105,9 +107,19 @@ public class TypeChecker extends Visitor<Type> {
                 typeErrors.add(new IsNotIndexable(accessExpression.getLine()));
                 return new NoType();
             }
-            //TODO:index of access list must be int
+            for(Expression currentExpr : accessExpression.getDimentionalAccess()) {
+                if (!(currentExpr.accept(this) instanceof IntType)) {
+                    typeErrors.add(new AccessIndexIsNotInt(accessExpression.getLine()));
+                    return new NoType();
+                }
+            }
+
+            if(accessedType instanceof StringType)
+                return new StringType();
+            else
+                return ((ListType) accessedType).getType();
         }
-        return null;
+
     }
 
     @Override
@@ -162,11 +174,15 @@ public class TypeChecker extends Visitor<Type> {
         }
         else{
             VarItem newVarItem = new VarItem(assignStatement.getAssignedId());
-            // TODO:maybe new type for a variable
             newVarItem.setType(assignStatement.getAssignExpression().accept(this));
             try {
                 SymbolTable.top.put(newVarItem);
-            }catch (ItemAlreadyExists ignored){}
+            }catch (ItemAlreadyExists notIgnored){
+                try {
+                    VarItem var = (VarItem)SymbolTable.top.getItem(VarItem.START_KEY + assignStatement.getAssignedId().toString());
+                    var.setType(assignStatement.getAssignExpression().accept(this));
+                }catch (ItemNotFound ignored){}
+            }
         }
         return new NoType();
     }
@@ -188,9 +204,31 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(PushStatement pushStatement){
-        //TODO:visit push statement
+        Type initialType = pushStatement.getInitial().accept(this);
+        Type toBeAdded = pushStatement.getToBeAdded().accept(this);
 
-        return new NoType();
+        if(!((initialType instanceof StringType) || (initialType instanceof ListType))){
+            typeErrors.add(new IsNotPushedable(pushStatement.getLine()));
+            return new NoType();
+        }
+
+        if(initialType instanceof ListType){
+            Type elementsType = ((ListType) initialType).getType();
+
+            if((!(elementsType instanceof  NoType)) && !(elementsType.sameType(toBeAdded))){
+                typeErrors.add(new PushArgumentsTypesMisMatch(pushStatement.getLine()));
+                return new NoType();
+            }
+
+            ((ListType) initialType).setType(toBeAdded);
+        }
+
+        else if(initialType instanceof StringType && !initialType.sameType(toBeAdded)){
+            typeErrors.add(new PushArgumentsTypesMisMatch(pushStatement.getLine()));
+            return new NoType();
+        }
+
+        return initialType;
     }
     @Override
     public Type visit(PutStatement putStatement){
@@ -217,7 +255,7 @@ public class TypeChecker extends Visitor<Type> {
     public Type visit(ListValue listValue){
         Type prevType = null;
         if(listValue.getElements().size() == 0)
-            return new NoType();
+            return new ListType(new NoType());
         prevType = listValue.getElements().get(0).accept(this);
         for(Expression currentVal : listValue.getElements()){
             if(!prevType.sameType(currentVal.accept(this))){
@@ -225,7 +263,9 @@ public class TypeChecker extends Visitor<Type> {
                 return(new NoType());
             }
         }
-        return prevType;
+
+        ListType listType = new ListType(prevType);
+        return listType;
     }
     @Override
     public Type visit(FunctionPointer functionPointer){
@@ -326,7 +366,6 @@ public class TypeChecker extends Visitor<Type> {
         RangeType rangeType = rangeExpression.getRangeType();
 
         if(rangeType.equals(RangeType.LIST)){
-            // TODO --> mind that the lists are declared explicitly in the grammar in this node, so handle the errors
             if(rangeExpression.getRangeExpressions().size() == 0)
                 return new NoType();
             Type firstType = rangeExpression.getRangeExpressions().get(0).accept(this);
@@ -338,6 +377,14 @@ public class TypeChecker extends Visitor<Type> {
             }
             return firstType;
         }
+
+        else if(rangeType.equals(RangeType.DOUBLE_DOT)){
+            for(Expression currentExpr : rangeExpression.getRangeExpressions())
+                currentExpr.accept(this);
+        }
+
+        else
+            return rangeExpression.getRangeExpressions().get(0).accept(this);
 
         return new IntType();
     }

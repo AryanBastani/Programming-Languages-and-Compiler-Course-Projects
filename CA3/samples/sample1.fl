@@ -9,8 +9,6 @@ def f(a, b, [c = 10])
 end
 
 def main()
-    b = 12;
-    for i in [1, 13, b]
-        a = 12;
-    end
+    a = [1, 2];
+   a = a[12];
 end
