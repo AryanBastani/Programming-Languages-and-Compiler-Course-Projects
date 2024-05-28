@@ -98,8 +98,15 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(AccessExpression accessExpression){
         if(accessExpression.isFunctionCall()){
-            //TODO:function is called here.set the arguments type and visit its declaration
-            return null;
+            try {
+                FunctionItem functionItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY +
+                        ((Identifier) accessExpression.getAccessedExpression()).getName());
+                ArrayList<Type> argTypes = new ArrayList<>();
+                for(Expression currentExpr : accessExpression.getArguments())
+                    argTypes.add(currentExpr.accept(this));
+                functionItem.setArgumentTypes(argTypes);
+                return(functionItem.getFunctionDeclaration().accept(this));
+            }catch (ItemNotFound ignored){}
         }
         else{
             Type accessedType = accessExpression.getAccessedExpression().accept(this);
@@ -119,7 +126,7 @@ public class TypeChecker extends Visitor<Type> {
             else
                 return ((ListType) accessedType).getType();
         }
-
+        return null;
     }
 
     @Override
@@ -135,8 +142,8 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(ForStatement forStatement){
         SymbolTable.push(SymbolTable.top.copy());
-        forStatement.getRangeExpression().accept(this);
         VarItem varItem = new VarItem(forStatement.getIteratorId());
+        varItem.setType(forStatement.getRangeExpression().accept(this));
         try{
             SymbolTable.top.put(varItem);
         }catch (ItemAlreadyExists ignored){}
@@ -242,10 +249,8 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(PutStatement putStatement){
-        //TODO:visit putStatement
-
+        putStatement.getExpression().accept(this);
         return new NoType();
-
     }
     @Override
     public Type visit(BoolValue boolValue){
@@ -265,7 +270,7 @@ public class TypeChecker extends Visitor<Type> {
     public Type visit(ListValue listValue){
         Type prevType = null;
         if(listValue.getElements().size() == 0)
-            return new ListType(new NoType());
+            return new ListType(new ListType(new NoType()));
         prevType = listValue.getElements().get(0).accept(this);
         for(Expression currentVal : listValue.getElements()){
             if(!prevType.sameType(currentVal.accept(this))){
