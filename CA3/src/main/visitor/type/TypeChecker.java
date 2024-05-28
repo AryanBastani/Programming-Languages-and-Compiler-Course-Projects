@@ -15,16 +15,21 @@ import main.compileError.typeErrors.*;
 import main.symbolTable.SymbolTable;
 import main.symbolTable.exceptions.*;
 import main.symbolTable.item.*;
+import main.symbolTable.utils.Stack;
 import main.visitor.Visitor;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.util.*;
 
 public class TypeChecker extends Visitor<Type> {
     public ArrayList<CompileError> typeErrors = new ArrayList<>();
+
+    private Stack<Pair<Type, Boolean>> functionsReturnInfo = new Stack<>();
     @Override
     public Type visit(Program program){
         SymbolTable.root = new SymbolTable();
         SymbolTable.top = new SymbolTable();
+
         for(FunctionDeclaration functionDeclaration : program.getFunctionDeclarations()){
             FunctionItem functionItem = new FunctionItem(functionDeclaration);
             try {
@@ -44,6 +49,9 @@ public class TypeChecker extends Visitor<Type> {
     @Override
     public Type visit(FunctionDeclaration functionDeclaration){
         SymbolTable.push(new SymbolTable());
+
+        functionsReturnInfo.push(new Pair<>(new NoType(), false));
+
         try {
             FunctionItem functionItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY +
                     functionDeclaration.getFunctionName().getName());
@@ -58,11 +66,16 @@ public class TypeChecker extends Visitor<Type> {
         }catch (ItemNotFound ignored){}
         for(Statement statement : functionDeclaration.getBody())
             statement.accept(this);
+        Pair<Type, Boolean> retrunInfo = functionsReturnInfo.pop();
+        if(retrunInfo.b){
+            typeErrors.add(new FunctionIncompatibleReturnTypes(functionDeclaration.getLine(),
+                    functionDeclaration.getFunctionName().getName()));
+            SymbolTable.pop();
+            return new NoType();
+        }
 
-        //TODO:Figure out whether return types of functions are not the same.
         SymbolTable.pop();
-        return null;
-        //TODO:Return the infered type of the function
+        return retrunInfo.a;
     }
     @Override
     public Type visit(PatternDeclaration patternDeclaration){
@@ -91,8 +104,10 @@ public class TypeChecker extends Visitor<Type> {
     }
     @Override
     public Type visit(MainDeclaration mainDeclaration){
+        functionsReturnInfo.push(new Pair<>(new NoType(), false));
         for(Statement statement : mainDeclaration.getBody())
             statement.accept(this);
+        functionsReturnInfo.pop();
         return null;
     }
     @Override
@@ -106,33 +121,40 @@ public class TypeChecker extends Visitor<Type> {
                     argTypes.add(currentExpr.accept(this));
                 functionItem.setArgumentTypes(argTypes);
                 return(functionItem.getFunctionDeclaration().accept(this));
-            }catch (ItemNotFound ignored){}
+            }catch (ItemNotFound ignored){return null;}
         }
-        else{
+        else {
             Type accessedType = accessExpression.getAccessedExpression().accept(this);
-            if(!(accessedType instanceof StringType) && !(accessedType instanceof ListType)){
+            if (!(accessedType instanceof StringType) && !(accessedType instanceof ListType)) {
                 typeErrors.add(new IsNotIndexable(accessExpression.getLine()));
                 return new NoType();
             }
-            for(Expression currentExpr : accessExpression.getDimentionalAccess()) {
+            for (Expression currentExpr : accessExpression.getDimentionalAccess()) {
                 if (!(currentExpr.accept(this) instanceof IntType)) {
                     typeErrors.add(new AccessIndexIsNotInt(accessExpression.getLine()));
                     return new NoType();
                 }
             }
 
-            if(accessedType instanceof StringType)
+            if (accessedType instanceof StringType)
                 return new StringType();
             else
                 return ((ListType) accessedType).getType();
         }
-        return null;
     }
 
     @Override
     public Type visit(ReturnStatement returnStatement){
-        // TODO:Visit return statement.Note that return type of functions are specified here
-        return null;
+        Pair<Type, Boolean> returnInfo = functionsReturnInfo.pop();
+        Type returnType = returnStatement.getReturnExp().accept(this);
+        if(!returnInfo.b){
+            if(returnInfo.a instanceof NoType)
+                returnInfo = new Pair<>(returnType, false);
+            else if(!returnInfo.a.sameType(returnType))
+                returnInfo = new Pair<>(returnType, true);
+        }
+        functionsReturnInfo.push(returnInfo);
+        return returnType;
     }
     @Override
     public Type visit(ExpressionStatement expressionStatement){
