@@ -136,8 +136,13 @@ public class TypeChecker extends Visitor<Type> {
                 functionItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY +
                         ((Identifier) accessExpression.getAccessedExpression()).getName());
             }catch (ItemNotFound notIgnored){
-                accessExpression.getAccessedExpression().accept(this);
-//                accessExpression.getAccessedExpression()
+                try {
+                    Type accessedType = accessExpression.getAccessedExpression().accept(this);
+                    if(accessedType instanceof FptrType fptrType){
+                        functionItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY +
+                                fptrType.getFunctionName());
+                    }
+                }catch (ItemNotFound ignored){}
             }
 
             ArrayList<Type> argTypes = new ArrayList<>();

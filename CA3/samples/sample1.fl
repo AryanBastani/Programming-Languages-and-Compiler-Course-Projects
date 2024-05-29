@@ -1,54 +1,45 @@
-def fib(n)
-    if ((n == 1) || (n == 2))
-        return 1;
+def func1(arg1, arg2, [arg3 = 5])
+    if (arg3 == 5)
+        puts("arg3 is 5");
+    else
+        return arg1 + arg2;
     end
-    return fib2(n);
 end
 
-def fib2(x)
-    x = "aaa";
-    push(x, "bbb");
-    return len(x);
+def func2(arg1, [arg2 = 5])
+    if (arg2 != 5)
+        return func1(1, 2);
+    else
+        if (arg2 == 5)
+            return "is arg2 5?";
+        end
+    end
+end
+
+def func3()
+    return "give me string!";
 end
 
 def main()
-    l = [];
-    push(l, "a");
-    push(l, 2);
-    x = "aaa";
-    push(x, l[0]);
-    x = 2;
-    len(2);
-    y = 2;
-    if (y + x)
-        l[x + y];
-        l[x == y];
-    end
-    res = "aaa" + "bbb";
-    res = (x == 1) + (y == 2);
-    res = (x == 1) + 4;
-    c = [1, 2, "aaa"];
-    c = [1, 2];
-    c[0] = "a";
-    for i in [1, 2, "aa"]
-        puts(i);
-    end
-    for i in [1, 2, 3]
-        puts(i);
-    end
-    b = ["a", "c"];
-    a = c[b[0]];
-    b = [1, 2];
-    a = c[b[0]];
-    a = c[b[0] == 1];
-    len(b);
-    len(b[0]);
-    b = ["a", "b"];
-    len(b[1]);
-    push([1, 2], "ASFA");
-    push([1, 2], 1);
-    push("AFAF", b[0]);
-    push("AFAF", 1);
-    push(12.2, "a");
-end
+    a = 1;
+    b = "string";
+    c = [1, 2, 3, 4];
 
+    e1 = b + c[1];
+    e2 = b[1] * b[2 - "1"];
+    e3 = ++method(:func1);
+    puts(func1("hello", "world"));
+    func2(2);
+    d = [1, 2, "ali", true, false];
+    puts(c[b[2]]);
+    f = len(func1(1, 2, 3));
+    f_true = len(func3());
+    puts(c[f_true]);
+
+    g = ["str"];
+    for i in (1..10)
+        push(g, i);
+        push(i, g);
+        push(g, func3());
+    end
+end
