@@ -4,6 +4,7 @@ import main.ast.nodes.Program;
 import main.ast.nodes.declaration.FunctionDeclaration;
 import main.ast.nodes.declaration.MainDeclaration;
 import main.ast.nodes.expression.*;
+import main.ast.nodes.expression.operators.BinaryOperator;
 import main.ast.nodes.expression.value.FunctionPointer;
 import main.ast.nodes.expression.value.ListValue;
 import main.ast.nodes.expression.value.primitive.BoolValue;
@@ -257,6 +258,63 @@ public class CodeGenerator extends Visitor<String> {
     }
     @Override
     public String visit(BinaryExpression binaryExpression){
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add(binaryExpression.getFirstOperand().accept(this));
+        commands.add(binaryExpression.getSecondOperand().accept(this));
+        BinaryOperator op = binaryExpression.getOperator();
+
+
+        switch (op) {
+            case PLUS -> commands.add("iadd");
+            case MINUS -> commands.add("isub");
+            case MULT -> commands.add("imul");
+            case DIVIDE -> commands.add("idiv");
+            case EQUAL -> {
+                String eqL = getFreshLabel();
+                String neqL = getFreshLabel();
+                commands.add("if_icmpeq " + eqL);
+                commands.add("ldc 0");
+                commands.add("goto " + neqL);
+                commands.add(eqL + ":");
+                commands.add("ldc 1");
+                commands.add(neqL + ":");
+            }
+            case NOT_EQUAL -> {
+                String eqL = getFreshLabel();
+                String neqL = getFreshLabel();
+                commands.add("if_icmpne " + eqL);
+                commands.add("ldc 0");
+                commands.add("goto " + neqL);
+                commands.add(eqL + ":");
+                commands.add("ldc 1");
+                commands.add(neqL + ":");
+            }
+            case LESS_EQUAL_THAN -> {
+                String ltL = getFreshLabel();
+                String geL = getFreshLabel();
+                commands.add("if_icmplt " + ltL);
+                commands.add("ldc 0");
+                commands.add("goto " + geL);
+                commands.add(ltL + ":");
+                commands.add("ldc 1");
+                commands.add(geL + ":");
+            }
+            case GREATER_THAN -> {
+                String gtL = getFreshLabel();
+                String leL = getFreshLabel();
+                commands.add("if_icmpgt " + gtL);
+                commands.add("ldc 0");
+                commands.add("goto " + leL);
+                commands.add(gtL + ":");
+                commands.add("ldc 1");
+                commands.add(leL + ":");
+            }
+            default -> {
+            }
+        }
+
+
+
         //TODO
         return null;
     }
