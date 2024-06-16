@@ -279,7 +279,9 @@ public class CodeGenerator extends Visitor<String> {
     }
     @Override
     public String visit(ListValue listValue){
-        //TODO
+        String commands = "";
+        commands+="invokespecial List/<init>(Ljava/util/ArrayList;)V\n";
+
         return null;
     }
     @Override
