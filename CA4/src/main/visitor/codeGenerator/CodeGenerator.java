@@ -313,9 +313,8 @@ public class CodeGenerator extends Visitor<String> {
             }
         }
 
+        addCommand(String.join("\n", commands));
 
-
-        //TODO
         return null;
     }
     @Override
