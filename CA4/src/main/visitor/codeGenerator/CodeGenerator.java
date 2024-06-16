@@ -284,17 +284,29 @@ public class CodeGenerator extends Visitor<String> {
     }
     @Override
     public String visit(IntValue intValue){
-        //TODO, use "invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer" to convert to primitive
+        String commands="";
+        commands+="invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer\n";
+        commands += "ldc " + intValue.getIntVal() + "\n";
+        addCommand(commands);
         return null;
     }
     @Override
     public String visit(BoolValue boolValue){
-        //TODO, use "invokestatic java/lang/Boolean/valueOf(Z)Ljava/lang/Boolean" to convert to primitive
+        String commands="";
+        commands+="invokestatic java/lang/Boolean/valueOf(Z)Ljava/lang/Boolean\n";
+        if(boolValue.getBool())
+            commands += "ldc 1\n";
+        else
+            commands += "ldc 0\n";
+        addCommand(commands);
+
         return null;
     }
     @Override
     public String visit(StringValue stringValue){
-        //TODO
+        String commands="";
+        commands+="ldc " + "\"" + stringValue.getStr() + "\"\n";
+        addCommand(commands);
         return null;
     }
 }
