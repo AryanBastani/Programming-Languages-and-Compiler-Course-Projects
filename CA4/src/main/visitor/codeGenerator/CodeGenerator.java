@@ -23,6 +23,7 @@ import main.visitor.Visitor;
 import main.visitor.type.TypeChecker;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -209,13 +210,41 @@ public class CodeGenerator extends Visitor<String> {
     }
     @Override
     public String visit(IfStatement ifStatement){
-        //TODO
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add(ifStatement.accept(this));
+
+        String thenL =getFreshLabel();
+        String elseL = getFreshLabel();;
+        String exitL = getFreshLabel();;
+
+        commands.add("ifeq" + " " + elseL);
+        commands.add(thenL + ":");
+        for (var stmt : ifStatement.getThenBody())
+            commands.add(stmt.accept(this));
+
+        commands.add("goto " + exitL);
+        commands.add(elseL + ":");
+        if (!ifStatement.getElseBody().isEmpty())
+            for (var stmt : ifStatement.getElseBody())
+                commands.add(stmt.accept(this));
+
+        commands.add(exitL + ":");
+        addCommand(String.join("\n",commands));
         return null;
     }
     @Override
     public String visit(PutStatement putStatement){
-        //TODO
-        return null;
+        addCommand("getstatic java/lang/System/out Ljava/io/PrintStream;");
+            Expression arg=putStatement.getExpression();
+            addCommand(arg.accept(this));
+            Type type = arg.accept(typeChecker);
+            if (type instanceof IntType)
+                addCommand("invokevirtual java/io/PrintStream/println(I)V");
+            else if (type instanceof BoolType)
+                addCommand("invokevirtual java/io/PrintStream/println(Z)V");
+            else if (type instanceof StringType)
+                addCommand("invokevirtual java/io/PrintStream/println(V)V");
+            return null;
     }
     @Override
     public String visit(ReturnStatement returnStatement){
