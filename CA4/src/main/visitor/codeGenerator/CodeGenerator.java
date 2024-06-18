@@ -461,13 +461,27 @@ private String getTypeDescriptor(Type type) {
             bytecode.append("invokevirtual java/lang/String/length()I\n");
         }
 
-        return bytecode.toString();
-    }
-    @Override
-    public String visit(ChopStatement chopStatement){
-        //TODO
+        addCommand( bytecode.toString());
         return null;
     }
+    @Override
+    public String visit(ChopStatement chopStatement) {
+        Expression expr = chopStatement.getChopExpression();
+        StringBuilder bytecode = new StringBuilder();
+        bytecode.append(expr.accept(this));
+        bytecode.append("dup\n");
+        bytecode.append("invokevirtual java/lang/String/length()I\n");
+        bytecode.append("iconst_1\n");
+        bytecode.append("isub\n");
+        bytecode.append("iconst_0\n");
+        bytecode.append("swap\n");
+        bytecode.append("invokevirtual java/lang/String/substring(II)Ljava/lang/String;\n");
+        bytecode.append("pop\n");
+
+        addCommand( bytecode.toString());
+        return null;
+    }
+
     @Override
     public String visit(FunctionPointer functionPointer){
         FptrType fptr = (FptrType) functionPointer.accept(typeChecker);
