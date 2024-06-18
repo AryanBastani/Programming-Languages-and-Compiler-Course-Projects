@@ -4,6 +4,7 @@ import main.ast.nodes.Program;
 import main.ast.nodes.declaration.FunctionDeclaration;
 import main.ast.nodes.declaration.MainDeclaration;
 import main.ast.nodes.expression.*;
+import main.ast.nodes.expression.operators.BinaryOperator;
 import main.ast.nodes.expression.value.FunctionPointer;
 import main.ast.nodes.expression.value.ListValue;
 import main.ast.nodes.expression.value.primitive.BoolValue;
@@ -12,6 +13,7 @@ import main.ast.nodes.expression.value.primitive.StringValue;
 import main.ast.nodes.statement.*;
 import main.ast.type.FptrType;
 import main.ast.type.ListType;
+import main.ast.type.NoType;
 import main.ast.type.Type;
 import main.ast.type.primitiveType.BoolType;
 import main.ast.type.primitiveType.IntType;
@@ -22,7 +24,9 @@ import main.symbolTable.item.FunctionItem;
 import main.visitor.Visitor;
 import main.visitor.type.TypeChecker;
 
+import javax.lang.model.type.PrimitiveType;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -171,6 +175,7 @@ public class CodeGenerator extends Visitor<String> {
         addCommand(commands);
         return null;
     }
+
     @Override
     public String visit(MainDeclaration mainDeclaration){
         slots.clear();
@@ -191,35 +196,143 @@ public class CodeGenerator extends Visitor<String> {
     }
     public String visit(AccessExpression accessExpression){
         if (accessExpression.isFunctionCall()) {
-            Identifier functionName = (Identifier)accessExpression.getAccessedExpression();
-            String args = ""; // TODO
-            String returnType = ""; // TODO
-            return "invokestatic Main/" + functionName.getName() + args + returnType + "\n";
+            Identifier functionName = (Identifier) accessExpression.getAccessedExpression();
+
+            ArrayList<Expression> argumentExpressions = accessExpression.getArguments();
+            Type returnType = accessExpression.accept(typeChecker);
+
+            StringBuilder bytecode = new StringBuilder();
+
+            bytecode.append("new java/util/ArrayList\n");
+            bytecode.append("dup\n");
+            bytecode.append("invokespecial java/util/ArrayList/<init>()V\n");
+
+            for (Expression argExpr : argumentExpressions) {
+                bytecode.append("dup\n"); // Duplicate the reference to the ArrayList
+                Type argType = argExpr.accept(typeChecker);
+                bytecode.append(argExpr.accept(this));
+
+                if (argType instanceof IntType) {
+                    bytecode.append("invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;\n");
+                } else if (argType instanceof BoolType) {
+                    bytecode.append("invokestatic java/lang/Boolean/valueOf(Z)Ljava/lang/Boolean;\n");
+                }
+
+
+                bytecode.append("invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z\n");
+                bytecode.append("pop\n");
+            }
+            String argsDescriptor = "(Ljava/util/ArrayList;)";
+            String returnTypeDescriptor = getTypeDescriptor(returnType);
+            bytecode.append("invokestatic Main/")
+                    .append(functionName.getName())
+                    .append(argsDescriptor)
+                    .append(returnTypeDescriptor)
+                    .append("\n");
+
+            if (returnType instanceof PrimitiveType) {
+                if (returnType instanceof IntType) {
+                    bytecode.append("invokevirtual java/lang/Integer/intValue()I\n");
+                } else if (returnType instanceof BoolType) {
+                    bytecode.append("invokevirtual java/lang/Boolean/booleanValue()Z\n");
+                }
+            }
+
+            addCommand(bytecode.toString());
+
+
         }
+
         else {
             // TODO
         }
-        //TODO
+        // TODO
         return null;
     }
+
+private String getTypeDescriptor(Type type) {
+    if (type instanceof PrimitiveType) {
+        if (type instanceof IntType) return "I";
+        if (type instanceof BoolType) return "Z";
+    }
+    return "null";
+}
+
+
     @Override
     public String visit(AssignStatement assignStatement){
-        //TODO
+        Expression rightHandSide = assignStatement.getAssignExpression();
+        Identifier leftHandSide = assignStatement.getAssignedId();
+
+
+        String bytecode = rightHandSide.accept(this) +
+                "istore " + leftHandSide.getName() + "\n" +
+                //pop the value on the stack???
+                "pop\n";
+
+        addCommand(bytecode);
         return null;
     }
     @Override
     public String visit(IfStatement ifStatement){
-        //TODO
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add(ifStatement.accept(this));
+
+        String thenL = getFreshLabel();
+        String elseL = getFreshLabel();
+        String exitL = getFreshLabel();
+
+        commands.add("ifeq" + " " + elseL);
+        commands.add(thenL + ":");
+        for (var stmt : ifStatement.getThenBody())
+            commands.add(stmt.accept(this));
+
+        commands.add("goto " + exitL);
+        commands.add(elseL + ":");
+        if (!ifStatement.getElseBody().isEmpty())
+            for (var stmt : ifStatement.getElseBody())
+                commands.add(stmt.accept(this));
+
+        commands.add(exitL + ":");
+        addCommand(String.join("\n",commands));
         return null;
     }
     @Override
     public String visit(PutStatement putStatement){
-        //TODO
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+            commands.add(putStatement.getExpression()
+                    .accept(this));
+            Type type =putStatement.getExpression()
+                    .accept(typeChecker);
+            if (type instanceof IntType)
+                commands.add("invokevirtual java/io/PrintStream/println(I)V");
+            else if (type instanceof BoolType)
+                commands.add("invokevirtual java/io/PrintStream/println(Z)V");
+            else if (type instanceof StringType)
+                commands.add("invokevirtual java/io/PrintStream/println(V)V");
+
+        addCommand(String.join("\n",commands));
         return null;
     }
     @Override
     public String visit(ReturnStatement returnStatement){
-        //TODO
+        Expression returnedExpr = returnStatement.getReturnExp();
+        Type type = returnedExpr.accept(typeChecker);
+        ArrayList<String> commands = new ArrayList<>();
+
+        if(type instanceof NoType) {
+            commands.add("return");
+        }
+        else {
+            commands.add(returnedExpr.accept(this));
+            if (type instanceof IntType )
+                commands.add("ireturn");
+            else
+                commands.add("areturn");
+        }
+
+        addCommand(String.join("\n",commands));
         return null;
     }
     @Override
@@ -228,13 +341,91 @@ public class CodeGenerator extends Visitor<String> {
     }
     @Override
     public String visit(BinaryExpression binaryExpression){
-        //TODO
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add(binaryExpression.getFirstOperand().accept(this));
+        commands.add(binaryExpression.getSecondOperand().accept(this));
+        switch (binaryExpression.getOperator()) {
+            case LESS_EQUAL_THAN -> {
+                String ltL = getFreshLabel();
+                String geL = getFreshLabel();
+                commands.add("if_icmplt " + ltL);
+                commands.add("ldc 0");
+                commands.add("goto " + geL);
+                commands.add(ltL + ":");
+                commands.add("ldc 1");
+                commands.add(geL + ":");
+            }
+            case GREATER_THAN -> {
+                String gtL = getFreshLabel();
+                String leL = getFreshLabel();
+                commands.add("if_icmpgt " + gtL);
+                commands.add("ldc 0");
+                commands.add("goto " + leL);
+                commands.add(gtL + ":");
+                commands.add("ldc 1");
+                commands.add(leL + ":");
+            }
+            case EQUAL -> {
+                String eqL = getFreshLabel();
+                String neqL = getFreshLabel();
+                commands.add("if_icmpeq " + eqL);
+                commands.add("ldc 0");
+                commands.add("goto " + neqL);
+                commands.add(eqL + ":");
+                commands.add("ldc 1");
+                commands.add(neqL + ":");
+            }
+            case NOT_EQUAL -> {
+                String eqL = getFreshLabel();
+                String neqL = getFreshLabel();
+                commands.add("if_icmpne " + eqL);
+                commands.add("ldc 0");
+                commands.add("goto " + neqL);
+                commands.add(eqL + ":");
+                commands.add("ldc 1");
+                commands.add(neqL + ":");
+            }
+            case DIVIDE -> commands.add("idiv");
+            case PLUS -> commands.add("iadd");
+            case MINUS -> commands.add("isub");
+            case MULT -> commands.add("imul");
+
+
+            default -> {
+            }
+        }
+
+        addCommand(String.join("\n", commands));
         return null;
     }
     @Override
-    public String visit(UnaryExpression unaryExpression){
-        //TODO
-        return null;
+    public String visit(UnaryExpression unaryExpression) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add(unaryExpression.getExpression().accept(this));
+        switch (unaryExpression.getOperator()) {
+            case NOT -> {
+                String ltL = getFreshLabel();
+                String geL = getFreshLabel();
+                commands.add("ifeq " + ltL);
+                commands.add("ldc 0");
+                commands.add("goto " + geL);
+                commands.add(ltL + ":");
+                commands.add("ldc 1");
+                commands.add(geL + ":");
+            }
+            case DEC -> {
+                commands.add("ldc 1");
+                commands.add("isub");
+            }
+            case MINUS -> commands.add("ineg");
+            case INC -> {
+                commands.add("ldc 1");
+                commands.add("iadd");
+            }
+            default -> {
+            }
+        }
+        return String.join("\n", commands) + "\n";
     }
     @Override
     public String visit(Identifier identifier){
@@ -257,9 +448,20 @@ public class CodeGenerator extends Visitor<String> {
         return null;
     }
     @Override
-    public String visit(LenStatement lenStatement){
-        //TODO
-        return null;
+    public String visit(LenStatement lenStatement) {
+        Expression expr = lenStatement.getExpression();
+        StringBuilder bytecode = new StringBuilder();
+
+        bytecode.append(expr.accept(this));
+
+        Type exprType = expr.accept(typeChecker);
+        if (exprType instanceof ListType) {
+            bytecode.append("List/getSize()\n");
+        } else if (exprType instanceof StringType) {
+            bytecode.append("invokevirtual java/lang/String/length()I\n");
+        }
+
+        return bytecode.toString();
     }
     @Override
     public String visit(ChopStatement chopStatement){
