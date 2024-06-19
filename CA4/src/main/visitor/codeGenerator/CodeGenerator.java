@@ -30,6 +30,7 @@ import main.visitor.type.TypeChecker;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class CodeGenerator extends Visitor<String> {
@@ -295,27 +296,6 @@ public class CodeGenerator extends Visitor<String> {
 
 
 
-//    private void appendMethodBody(StringBuilder cmdBuilder, FunctionDeclaration funcDecl) {
-//        for (var stmt : funcDecl.getBody()) {
-//            String temp = stmt.accept(this);
-//            if (temp != null) {
-//                cmdBuilder.append(temp);
-//            }
-//        }
-//    }
-
-//    private void appendReturn(StringBuilder cmdBuilder, Type returnType) {
-//        if (returnType == null || returnType instanceof  NoType){
-//            cmdBuilder.append("return\n");
-//        }
-//            else if (returnType instanceof IntType) {
-//            cmdBuilder.append("ireturn\n");
-//        }
-//            else {
-//            cmdBuilder.append("areturn\n");
-//        }
-//    }
-
 
     @Override
     public String visit(MainDeclaration mainDeclaration) {
@@ -345,75 +325,81 @@ public class CodeGenerator extends Visitor<String> {
         return null;
     }
 
-    public String visit(AccessExpression accessExpression){
-        ArrayList<String> commands = new ArrayList<String>();
-        if (accessExpression.isFunctionCall()) {
-            Identifier functionName = (Identifier)accessExpression.getAccessedExpression();
-            Type functionType = functionName.accept(typeChecker);
-
-            FunctionItem funcItem = null;
-            String functionNameStr = "";
-
-            if (functionType instanceof FptrType fptr) {
-                functionNameStr += fptr.getFunctionName();
-            } else {
-                functionNameStr += functionName.getName();
-            }
-
-            try {
-                funcItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY + functionNameStr);
-            } catch(ItemNotFound ignored) {
-
-            }
-            String args = "(";
-            ArrayList<String> argTypes = new ArrayList<String>();
-            int index = 0;
-            for (Expression arg : accessExpression.getArguments()) {
-                commands.add(arg.accept(this));
-                args += getTypeDescriptor(arg.accept(typeChecker));
-                index++;
-            }
-
-            for (int i = index; i < funcItem.getArgumentTypes().size(); i++) {
-                args += getTypeDescriptor(funcItem.getArgumentTypes().get(i));
-                commands.add(funcItem.getFunctionDeclaration().getArgs().get(i).getDefaultVal().accept(this));
-            }
-
-            args += ")";
-
-            String returnType = "";
-            returnType += getTypeDescriptor(funcItem.getReturnType());
-            commands.add("invokestatic Main/" + functionNameStr + args + returnType);
-            return String.join("\n", commands)+"\n";
+    @Override
+    public String visit(AccessExpression accessExpr) {
+        ArrayList<String> cmdList = new ArrayList<>();
+        if (accessExpr.isFunctionCall()) {
+            handleFunctionCall(accessExpr, cmdList);
+        } else {
+            handleArrayAccess(accessExpr, cmdList);
         }
-        else {
-
-            commands.add(accessExpression.getAccessedExpression().accept(this));
-
-            for (Expression exp : accessExpression.getDimentionalAccess()) {
-                commands.add(exp.accept(this));
-            }
-
-            ListType listType = (ListType) accessExpression.getAccessedExpression().accept(typeChecker);
-
-            commands.add("invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;");
-            commands.add("checkcast " + getTypeDescriptor(listType.getType()));
-
-            if (listType.getType() instanceof BoolType) {
-                commands.add("invokevirtual java/lang/Boolean/booleanValue()Z");
-            } else if (listType.getType() instanceof IntType) {
-                commands.add("invokevirtual java/lang/Integer/intValue()I");
-            }
-
-            Expression accessedExpr = accessExpression.getAccessedExpression();
-            String varName = ((Identifier) accessedExpr).getName();
-
-            return String.join("\n", commands);
-        }
-
+        return String.join("\n", cmdList) + "\n";
     }
 
-private String getTypeDescriptor(Type type) {
+    private void handleFunctionCall(AccessExpression accessExpr, ArrayList<String> cmdList) {
+        Identifier funcName = (Identifier) accessExpr.getAccessedExpression();
+        Type funcType = funcName.accept(typeChecker);
+
+        FunctionItem functionItem = resolveFunctionItem(funcName, funcType);
+        String methodArgs = buildMethodArgs(accessExpr, cmdList, functionItem);
+
+        String retTypeDesc = getTypeDescriptor(functionItem.getReturnType());
+        cmdList.add("invokestatic Main/" + functionItem.getName() + methodArgs + retTypeDesc);
+    }
+
+    private FunctionItem resolveFunctionItem(Identifier funcName, Type funcType) {
+        String funcNameStr = "";
+        if (funcType instanceof FptrType fptr) {
+            funcNameStr += fptr.getFunctionName();
+        } else {
+            funcNameStr += funcName.getName();
+        }
+
+        FunctionItem funcItem = null;
+        try {
+            funcItem = (FunctionItem) SymbolTable.root.getItem(FunctionItem.START_KEY + funcNameStr);
+        } catch (ItemNotFound ignored) {}
+        return funcItem;
+    }
+
+    private String buildMethodArgs(AccessExpression accessExpr, ArrayList<String> cmdList, FunctionItem funcItem) {
+        StringBuilder argsBuilder = new StringBuilder("(");
+        int argIndex = 0;
+
+        for (Expression arg : accessExpr.getArguments()) {
+            cmdList.add(arg.accept(this));
+            argsBuilder.append(getTypeDescriptor(arg.accept(typeChecker)));
+            argIndex++;
+        }
+
+        for (int i = argIndex; i < funcItem.getArgumentTypes().size(); i++) {
+            argsBuilder.append(getTypeDescriptor(funcItem.getArgumentTypes().get(i)));
+            cmdList.add(funcItem.getFunctionDeclaration().getArgs().get(i).getDefaultVal().accept(this));
+        }
+
+        argsBuilder.append(")");
+        return argsBuilder.toString();
+    }
+
+    private void handleArrayAccess(AccessExpression accessExpr, ArrayList<String> cmdList) {
+        cmdList.add(accessExpr.getAccessedExpression().accept(this));
+        for (Expression expr : accessExpr.getDimentionalAccess()) {
+            cmdList.add(expr.accept(this));
+        }
+
+        ListType listType = (ListType) accessExpr.getAccessedExpression().accept(typeChecker);
+        cmdList.add("invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;");
+        cmdList.add("checkcast " + getTypeClass(listType.getType()));
+
+        if (listType.getType() instanceof BoolType) {
+            cmdList.add("invokevirtual java/lang/Boolean/booleanValue()Z");
+        } else if (listType.getType() instanceof IntType) {
+            cmdList.add("invokevirtual java/lang/Integer/intValue()I");
+        }
+    }
+
+
+    private String getTypeDescriptor(Type type) {
 
         if (type instanceof IntType) return "I";
         if (type instanceof BoolType) return "Z";
@@ -431,36 +417,152 @@ private String getTypeDescriptor(Type type) {
     public String visit(AssignStatement assignStatement) {
         if (assignStatement.isAccessList()) {
             return handleListAccess(assignStatement);
-        } else {
+        }
+        else {
             return handleRegularAssign(assignStatement);
         }
     }
 
-    private String handleListAccess(AssignStatement assignStatement) {
-        // Placeholder for list access handling
-        return null;
-    }
 
-    private String handleRegularAssign(AssignStatement assignStatement) {
-        Identifier id = assignStatement.getAssignedId();
-        Expression expr = assignStatement.getAssignExpression();
-        AssignOperator op = assignStatement.getAssignOperator();
-        String varName = id.getName();
-        int slot = slotOf(varName);
-        Type type = id.accept(typeChecker);
-        StringBuilder cmdBuilder = new StringBuilder();
+    public String handleListAccess(AssignStatement assignStatement) {
+        ArrayList<String> commands = new ArrayList<>();
+        Expression assignExp = assignStatement.getAssignExpression();
+        Type assignValueType = assignExp.accept(typeChecker);
 
-        if (op == AssignOperator.ASSIGN) {
-            cmdBuilder.append(expr.accept(this));
-            appendStoreCommand(cmdBuilder, type, slot);
+        if (assignStatement.isAccessList()) {
+            processAccessList(assignStatement, commands, assignExp, assignValueType);
         } else {
-            appendLoadCommand(cmdBuilder, type, slot);
-            cmdBuilder.append(expr.accept(this));
-            appendOperatorCommand(cmdBuilder, op);
-            appendStoreCommand(cmdBuilder, type, slot);
+            processSimpleAssign(assignStatement, commands, assignExp, assignValueType);
         }
 
-        return cmdBuilder.toString();
+        return String.join("\n", commands) + "\n";
+    }
+
+    private void processAccessList(AssignStatement assignStatement, ArrayList<String> commands, Expression assignExp, Type assignValueType) {
+        commands.add(assignStatement.getAssignedId().accept(this));
+        commands.add(assignStatement.getAccessListExpression().accept(this));
+
+        switch (assignStatement.getAssignOperator()) {
+            case AssignOperator.ASSIGN -> handleAssign(commands, assignExp, assignValueType);
+            case AssignOperator.PLUS_ASSIGN -> handleArithmeticAssign(commands, assignStatement, assignExp, "iadd");
+            case AssignOperator.MINUS_ASSIGN -> handleArithmeticAssign(commands, assignStatement, assignExp, "isub");
+            case AssignOperator.MULT_ASSIGN -> handleArithmeticAssign(commands, assignStatement, assignExp, "imul");
+            case AssignOperator.DIVIDE_ASSIGN -> handleArithmeticAssign(commands, assignStatement, assignExp, "idiv");
+            case AssignOperator.MOD_ASSIGN -> handleArithmeticAssign(commands, assignStatement, assignExp, "irem");
+            default -> {}
+        }
+    }
+
+    private void handleAssign(ArrayList<String> commands, Expression assignExp, Type assignValueType) {
+        commands.add(assignExp.accept(this));
+        castValue(commands, assignValueType);
+        commands.add("checkcast " + getTypeClass(null));
+        commands.add("invokevirtual java/util/ArrayList/set(ILjava/lang/Object;)Ljava/lang/Object;");
+    }
+
+    private void handleArithmeticAssign(ArrayList<String> commands, AssignStatement assignStatement, Expression assignExp, String operation) {
+        commands.add(assignStatement.getAssignedId().accept(this));
+        commands.add(assignStatement.getAccessListExpression().accept(this));
+        commands.add("invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;");
+        commands.add("checkcast " + getTypeClass(new IntType()));
+        commands.add("invokevirtual java/lang/Integer/intValue()I");
+        commands.add(assignExp.accept(this));
+        commands.add(operation);
+        castValue(commands, new IntType());
+        commands.add("checkcast " + getTypeClass(null));
+        commands.add("invokevirtual java/util/ArrayList/set(ILjava/lang/Object;)Ljava/lang/Object;");
+    }
+
+    private void castValue(ArrayList<String> commands, Type assignValueType) {
+        if (assignValueType instanceof IntType) {
+            commands.add("invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;");
+        } else if (assignValueType instanceof BoolType) {
+            commands.add("invokestatic java/lang/Boolean/valueOf(Z)Ljava/lang/Boolean;");
+        }
+    }
+
+    private void processSimpleAssign(AssignStatement assignStatement, ArrayList<String> commands, Expression assignExp, Type assignValueType) {
+        commands.add(assignStatement.getAssignedId().accept(this));
+        commands.add(assignExp.accept(this));
+        if (assignValueType instanceof IntType) {
+            commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+        } else if (assignValueType instanceof BoolType) {
+            commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+        } else {
+            commands.add("astore " + slotOf(assignStatement.getAssignedId().getName()));
+        }
+    }
+
+    private String getTypeClass(Type type) {
+        if (type instanceof IntType) {
+            return "java/lang/Integer";
+        } else if (type instanceof BoolType) {
+            return "java/lang/Boolean";
+        }
+        else if (type instanceof  StringType){
+            return "java/lang/String";
+        }
+        return "java/lang/Object";
+    }
+
+
+    private String handleRegularAssign(AssignStatement assignStatement) {
+        List<String> commands = new ArrayList<>();
+
+        Expression assignExp = assignStatement.getAssignExpression();
+
+        Type assignValueType = assignExp.accept(typeChecker);
+        commands.add(assignExp.accept(this));
+        switch (assignStatement.getAssignOperator()){
+            case AssignOperator.ASSIGN -> {
+                VarItem newVarItem = new VarItem(assignStatement.getAssignedId());
+                newVarItem.setType(assignValueType);
+                try {
+                    SymbolTable.top.put(newVarItem);
+                }catch (ItemAlreadyExists ignored){
+                    VarItem item = null;
+                    try {
+                        item = (VarItem) SymbolTable.top.getItem(VarItem.START_KEY + newVarItem.getName());
+                    } catch (ItemNotFound ignored1) {}
+                    assert item != null;
+                    item.setType(assignValueType);
+                }
+                commands.add((assignValueType instanceof IntType || assignValueType instanceof BoolType ? "istore " : "astore ")
+                        + slotOf(assignStatement.getAssignedId().getName()));
+
+            }
+            case AssignOperator.PLUS_ASSIGN -> {
+                commands.add("iload " + slotOf(assignStatement.getAssignedId().getName()));
+                commands.add("iadd");
+                commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+            }
+            case AssignOperator.MINUS_ASSIGN -> {
+                commands.add("iload " + slotOf(assignStatement.getAssignedId().getName()));
+                commands.add("isub");
+                commands.add("ineg");
+                commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+            }
+            case AssignOperator.MULT_ASSIGN -> {
+                commands.add("iload " + slotOf(assignStatement.getAssignedId().getName()));
+                commands.add("imul");
+                commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+            }
+            case AssignOperator.DIVIDE_ASSIGN -> {
+                commands.add("iload " + slotOf(assignStatement.getAssignedId().getName()));
+                commands.add(assignExp.accept(this));
+                commands.add("idiv");
+                commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+            }
+            case AssignOperator.MOD_ASSIGN -> {
+                commands.add("iload " + slotOf(assignStatement.getAssignedId().getName()));
+                commands.add("irem");
+                commands.add("istore " + slotOf(assignStatement.getAssignedId().getName()));
+            }
+            case null, default -> {
+            }
+        }
+
+        return String.join("\n", commands) + "\n";
     }
 
     private void appendLoadCommand(StringBuilder cmdBuilder, Type type, int slot) {
@@ -528,26 +630,25 @@ private String getTypeDescriptor(Type type) {
         commands += "getstatic java/lang/System/out Ljava/io/PrintStream;\n";
         commands += putStatement.getExpression().accept(this);
         Type type=putStatement.getExpression().accept(typeChecker);
-        if (type instanceof  IntType)
-            T="I";
-        else if (type instanceof BoolType) {
-            T="Z";
+        if (type instanceof StringType) {
+            commands += ("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n");
+        } else if (type instanceof IntType) {
+            commands += ("invokevirtual java/io/PrintStream/println(I)V\n");
+        } else if (type instanceof BoolType) {
+            commands += ("invokevirtual java/io/PrintStream/println(Z)V\n");
         }
-        else if (type instanceof StringType)
-            T=getType(type);
-
-        commands += "invokevirtual java/io/PrintStream/println(" +
-        T + ")V\n";
         return commands;
     }
 
     @Override
     public String visit(ReturnStatement returnStatement){
         Expression returnedExpr = returnStatement.getReturnExp();
-        Type type = returnedExpr.accept(typeChecker);
+        Type type = null;
+        if(returnedExpr != null)
+            type = returnedExpr.accept(typeChecker);
         ArrayList<String> commands = new ArrayList<>();
 
-        if(type instanceof NoType) {
+        if(type == null || type instanceof NoType) {
             commands.add("return");
         }
         else {
@@ -558,7 +659,7 @@ private String getTypeDescriptor(Type type) {
                 commands.add("areturn");
         }
 
-        return (String.join("\n",commands));
+        return (String.join("\n",commands) + "\n");
     }
     @Override
     public String visit(ExpressionStatement expressionStatement){
@@ -687,44 +788,49 @@ private String getTypeDescriptor(Type type) {
 
         return typeSign + "load " + slotOf(identifier.getName())+"\n";
     }
+
+    @Override
+    public String visit(BreakStatement breakStatement){
+        //TODO
+        String commands = "goto ";
+        commands += forBreakLabls.pop();
+        commands += "\n";
+        return commands;
+    }
+    @Override
+    public String visit(NextStatement nextStatement){
+        //TODO
+        String commands = "goto ";
+        commands += forNextLabels.pop();
+        commands += "\n";
+        return commands;
+    }
     @Override
     public String visit(LoopDoStatement loopDoStatement) {
+//TODO
         String commands = "";
-
         String startLabel = getFreshLabel();
         String endLabel = getFreshLabel();
-
-        forBreakLabls.push(endLabel);
         forNextLabels.push(startLabel);
-
+        forBreakLabls.push(endLabel);
         commands += startLabel + ":\n";
-        for (var statement : loopDoStatement.getLoopBodyStmts()) {
-            String temp = statement.accept(this);
-            if (temp != null) {
-                commands += temp;
+        SymbolTable.push(SymbolTable.top.copy());
+        for(var statement : loopDoStatement.getLoopBodyStmts()){
+            String st = statement.accept(this);
+            if(st != null){
+                commands += st;
+                commands += "\n";
             }
         }
+        SymbolTable.pop();
         commands += "goto " + startLabel + "\n";
-
-        forBreakLabls.pop();
-        forNextLabels.pop();
-
         commands += endLabel + ":\n";
-
+        forNextLabels.pop();
+        forBreakLabls.pop();
         return commands;
     }
 
-//    @Override
-//    public String visit(BreakStatement breakStatement) {
-////        String commands = "goto " + forBreakLabls.peek() + "\n";
-////        return commands;
-//    }
 
-//    @Override
-//    public String visit(NextStatement nextStatement) {
-//        String commands = "goto " + forNextLabels. + "\n";
-//        return commands;
-//    }
 
     @Override
     public String visit(LenStatement lenStatement) {
@@ -735,13 +841,13 @@ private String getTypeDescriptor(Type type) {
 
         Type exprType = expr.accept(typeChecker);
         if (exprType instanceof ListType) {
-            bytecode.append("List/getSize()\n");
+            bytecode.append("invokevirtual java/util/ArrayList/size()I\n");
         }
         else if (exprType instanceof StringType) {
             bytecode.append("invokevirtual java/lang/String/length()I\n");
         }
 
-        return(bytecode.toString());
+        return(bytecode.toString() + "\n");
 
     }
     @Override
@@ -773,15 +879,30 @@ private String getTypeDescriptor(Type type) {
     }
     @Override
     public String visit(ListValue listValue){
-        String commands = "";
-        commands+="invokespecial List/<init>(Ljava/util/ArrayList;)V\n";
+        List<String> commands = new ArrayList<>();
+        commands.add("new java/util/ArrayList");
+        commands.add("dup");
+        commands.add("invokespecial java/util/ArrayList/<init>()V");
+        commands.add("astore " + slotOf("array_"));
+        for (Expression expression : listValue.getElements()){
+            commands.add("aload " + slotOf("array_"));
+            commands.add(expression.accept(this));
+            Type type = expression.accept(typeChecker);
+            if (type instanceof IntType)
+                commands.add("invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;");
+            else if (type instanceof BoolType){
+                commands.add("invokestatic java/lang/Boolean/valueOf(Z)Ljava/lang/Boolean;");
+            }
+            commands.add("invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z");
+            commands.add("pop");
+        }
+        commands.add("aload " + slotOf("array_"));
 
-        return commands;
+        return String.join("\n", commands)+"\n";
     }
     @Override
     public String visit(IntValue intValue){
         String commands="";
-//        commands+="invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer\n";
         commands += "ldc " + intValue.getIntVal() + "\n";
         return commands;
     }
