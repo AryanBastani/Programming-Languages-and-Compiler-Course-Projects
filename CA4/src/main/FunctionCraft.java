@@ -18,7 +18,7 @@ import java.io.*;
 
 public class FunctionCraft {
     public static void main(String[] args) throws IOException {
-        CharStream reader = CharStreams.fromFileName(args[0]);
+        CharStream reader = CharStreams.fromFileName("samples/sample1.fl");
         FunctionCraftLexer flLexer = new FunctionCraftLexer(reader);
         CommonTokenStream tokens = new CommonTokenStream(flLexer);
         FunctionCraftParser flParser = new FunctionCraftParser(tokens);
@@ -45,6 +45,7 @@ public class FunctionCraft {
             System.out.println("---------------------------Compilation Successful---------------------------");
             File dir = new File("./codeGenOutput");
             Process process = Runtime.getRuntime().exec("java -jar jasmin.jar *.j", null, dir);
+            printResults(process.getErrorStream());
             process = Runtime.getRuntime().exec("java Main", null, dir);
             printResults(process.getInputStream());
             printResults(process.getErrorStream());
